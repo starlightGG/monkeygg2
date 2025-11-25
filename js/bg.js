@@ -13,8 +13,8 @@ const opt = {
     s2: rand(20, 90),
     l1: rand(30, 80),
     l2: rand(30, 80),
-    strokeWeight: 2, // Retained but not used for rendering in this version
-    tail: 82, // Retained but overridden in draw()
+    strokeWeight: 2,
+    tail: 82,
 };
 
 changeTitleColor();
@@ -42,7 +42,7 @@ document.body.addEventListener('click', () => {
 });
 
 /*--------------------
-Particle (Polygonal)
+Particle (Square/Polygonal)
 --------------------*/
 class Particle {
     constructor(x, y) {
@@ -59,7 +59,7 @@ class Particle {
         this.sat = this.hueSem > 0.5 ? opt.s1 : opt.s2;
         this.light = this.hueSem > 0.5 ? opt.l1 : opt.l2;
         this.maxSpeed = this.hueSem > 0.5 ? 3 : 2;
-        // Size for the filled circle (polygonal particle)
+        // Size for the filled square (polygonal particle)
         this.size = this.hueSem > 0.5 ? 4 : 3; 
     }
 
@@ -125,11 +125,12 @@ class Particle {
         }
     }
 
-    // MODIFIED: Renders a filled circle instead of a line trail
+    // MODIFIED: Renders a filled square instead of a circle or line trail
     render() {
         fill(`hsla(${this.hue}, ${this.sat}%, ${this.light}%, .8)`);
-        noStroke(); // Ensure no outline is drawn
-        circle(this.x, this.y, this.size); // Draw the filled circular particle
+        noStroke(); 
+        // Draw the filled square. The size is used for both width and height.
+        rect(this.x, this.y, this.size, this.size); 
         this.updatePrev();
     }
 }
@@ -144,7 +145,9 @@ function setup() {
     for (let i = 0; i < opt.particles; i++) {
         Particles.push(new Particle(Math.random() * width, Math.random() * height));
     }
-    // Removed strokeWeight since we are drawing filled circles
+    // Set rectangle drawing mode to CENTER so the particle's (x, y) is the center of the square.
+    // This is crucial for accurate particle positioning.
+    rectMode(CENTER); 
 }
 
 /*--------------------
@@ -154,7 +157,7 @@ let inGame = false;
 function draw() {
     if (!inGame && document.visibilityState == 'visible') {
         time++;
-        // Increased alpha (95) for the background to minimize trails, emphasizing the dots
+        // Increased alpha (95) for the background to minimize trails, emphasizing the discrete shapes
         background(0, 95); 
 
         for (let p of Particles) {
