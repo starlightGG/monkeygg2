@@ -13,8 +13,8 @@ const opt = {
     s2: rand(20, 90),
     l1: rand(30, 80),
     l2: rand(30, 80),
-    strokeWeight: 2,
-    tail: 82,
+    strokeWeight: 2, // Retained but not used for rendering in this version
+    tail: 82, // Retained but overridden in draw()
 };
 
 changeTitleColor();
@@ -42,7 +42,7 @@ document.body.addEventListener('click', () => {
 });
 
 /*--------------------
-Particle
+Particle (Polygonal)
 --------------------*/
 class Particle {
     constructor(x, y) {
@@ -59,6 +59,8 @@ class Particle {
         this.sat = this.hueSem > 0.5 ? opt.s1 : opt.s2;
         this.light = this.hueSem > 0.5 ? opt.l1 : opt.l2;
         this.maxSpeed = this.hueSem > 0.5 ? 3 : 2;
+        // Size for the filled circle (polygonal particle)
+        this.size = this.hueSem > 0.5 ? 4 : 3; 
     }
 
     randomize() {
@@ -67,6 +69,8 @@ class Particle {
         this.sat = this.hueSem > 0.5 ? opt.s1 : opt.s2;
         this.light = this.hueSem > 0.5 ? opt.l1 : opt.l2;
         this.maxSpeed = this.hueSem > 0.5 ? 3 : 2;
+        // Update size on randomization
+        this.size = this.hueSem > 0.5 ? 4 : 3;
     }
 
     update() {
@@ -121,9 +125,11 @@ class Particle {
         }
     }
 
+    // MODIFIED: Renders a filled circle instead of a line trail
     render() {
-        stroke(`hsla(${this.hue}, ${this.sat}%, ${this.light}%, .5)`);
-        line(this.x, this.y, this.lx, this.ly);
+        fill(`hsla(${this.hue}, ${this.sat}%, ${this.light}%, .8)`);
+        noStroke(); // Ensure no outline is drawn
+        circle(this.x, this.y, this.size); // Draw the filled circular particle
         this.updatePrev();
     }
 }
@@ -138,18 +144,18 @@ function setup() {
     for (let i = 0; i < opt.particles; i++) {
         Particles.push(new Particle(Math.random() * width, Math.random() * height));
     }
-    strokeWeight(opt.strokeWeight);
+    // Removed strokeWeight since we are drawing filled circles
 }
 
 /*--------------------
 Draw
 --------------------*/
-
 let inGame = false;
 function draw() {
     if (!inGame && document.visibilityState == 'visible') {
         time++;
-        background(0, 100 - opt.tail);
+        // Increased alpha (95) for the background to minimize trails, emphasizing the dots
+        background(0, 95); 
 
         for (let p of Particles) {
             p.update();
