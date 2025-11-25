@@ -769,23 +769,83 @@ const presets = {
     classroom: {
         url: 'https://classroom.google.com/',
         title: 'Home',
-        icon: 'https://ssl.gstatic.com/classroom/ic_product_classroom_32.png',
+        icon: 'https://ssl.gstatic.com/classroom/favicon.ico',
     },
     drive: {
         url: 'https://drive.google.com/',
         title: 'My Drive - Google Drive',
-        icon: 'https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAB+klEQVR4AWJwL/ChKx68ForXW7SJN1iswYb5GyxaqGqhycrgR+rTAKzUA2hoURwG8Cn3bL/wbNuIz7b5p9kOY57NMBvZs23bPtt/dW7b4VR94ep3v6OHaJvFJSoaZldQROB+hDJValcFPBj20vB82AsEAYCVyTT1uUykaWitGAQIB1oy22WoKOhKQMCCMKa0dLypYN9dTs7HcMvg5YCAHQKAzLmwpwpYGbORBHH2LAfMY4G4JdmOaJkvBQnsMQ+DHAl5MTSeqjaMASaarvZ00SB8UATCyp1OVzMWgfBDiwLhY7J2+Nn5LScyVCkUfkoI3nLqWivAcB7j52HYSISMEJz9WIwEyyE/AAtEBJLbRLoNiBxigIcVgDO08AwFwnkpwfx4Sx1aSFrmLwAvRDz+BBtaFB6Gg9txA9sEg6d9NLNO+/5HvFz0sXXardmy567d4CFW4F5V1BuXiUgVNBa5jpdEBdz2vTRy2/cyxMtduyFpTjtMotobD1D75Yvs3LjopYDwh9v/5CNWrtsOSjGc/8bFqP/mHtRx7zyVodP7tisgZMeffB8SO6xfLYeIlllvTSkM2jH34UraQeB5VkvexoeWWsttR7bEaPu9Cz95IEZbAVw8wm461+7uuXrp4Q0L6LxxS/NKQQ+t2HpYKEKQPMhXkpkNqoYwXTEA+kphQitc/vYAAAAASUVORK5CYII=',
     },
-    mail: {
-        url: 'https://mail.google.com/',
-        title: 'Inbox (12) - Google Mail',
-        icon: 'https://www.gstatic.com/images/branding/product/2x/gmail_2020q4_512dp.png',
+    icivics: {
+        url: 'https://www.icivics.org/',
+        title: 'Home | iCivics',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAV1BMVEVHcEz/ZAD/ZwD/WwD/WwD/YAD/ZAD/WwD/WwD/WwD/WwD/WwD/WwD/WwD/ZgD/WwD/WwD/WwD/aAD/gAD/kQD/kAD/kQD/kQD/kQD/ZQD/kQD/jQD/bwAvM226AAAAHHRSTlMACCEwRhgPhrjT4e6tdjyd+/9a///yfrli/53evbsBzAAAAOVJREFUeAGtkgUSwlAMRL+71u3+18QSHDrWheqbbpQcIcq4EIJL+o2U0MY672yI6ZPx7EoFFavVG0sWCeDAXpmr7zLy6Wnrp7JCpjK6OZMNhvYNQgGmPidKVMq+XhXAmGpgmKPMpV4LAsgM5HDPkMX4bAWkU+KzVZ91FMjgQwDbrv8FwfYCh5+2zFxhNz4SGqbEFCVYSqlzd/kUS1m6fjU5ymcT2gtdbk1Y+q7bsAnYvvlCu3VcxvVybbF9mBJSUAuNfyt1A9zOMLLPYc/bts1vw95fExC9LZi7zoP/Xs0kEpfkAJ0B2VoUsYiyizsAAAAASUVORK5CYII=',
     },
-    canvas: {
-        url: 'https://www.instructure.com/',
-        title: 'Dashboard',
-        icon: 'https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico',
+    clever: {
+        url: 'https://clever.com/in/login',
+        title: 'Clever | Portal',
+        icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi3ptQJ9ibYtsUiQ1yNX5abVZvtmG9fwqjNpUqzO6N8qbrYgM:https://resources.finalsite.net/images/f_auto,q_auto/v1689877141/mooreschoolscom/emadd6nvplrnh1vsswjf/Clever-Logo.jpg&s',
     },
+    khanacademy: {
+        url: 'https://www.khanacademy.org/',
+        title: 'Khan Academy',
+        icon: 'https://www.khanacademy.org/favicon.ico',
+    },
+    googledocs: {
+        url: 'https://docs.google.com/document/',
+        title: 'Google Docs',
+        icon: 'https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_x16.png',
+    },
+    outlook: {
+        url: 'https://outlook.live.com/mail/',
+        title: 'Outlook Mail',
+        icon: 'https://outlook.live.com/favicon.ico',
+    },
+    calculator: {
+        url: 'https://www.calculator.net/',
+        title: 'Calculator',
+        icon: 'https://www.calculator.net/favicon.ico',
+    },
+    google: {
+        url: 'https://www.google.com/',
+        title: 'Google',
+        icon: 'https://google.com/favicon.ico',
+    },
+    googleclassroomsearch: {
+        url: 'https://www.google.com/search?q=Google+Classroom',
+        title: 'Google Classroom - Google Search',
+        icon: 'https://google.com/favicon.ico',
+    },
+    activatelearning: {
+        url: 'https://activatelearning.com/',
+        title: 'Activate Learning Digital Platform - Home',
+        icon: 'https://activatelearning.com/wp-content/uploads/2023/05/favicon.png',
+    },
+    gallopade: {
+        url: 'https://gallopade.com/',
+        title: 'Gallopade: Educational Products, Social Studies Curriculum, Reading, Common Core',
+        icon: 'https://gallopade.com/favicon.ico',
+    },
+    ilclassroom: {
+        url: 'https://ilclassroom.com//',
+        title: 'Classes | IL Classroom',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAV1BMVEVHcEwAAHwAAH0AAHwAAHwAAHwAAHwAAH0AAHwAAHwAAHwAAHwAAHoaGoMoKIYAAHZGR5fv8vv///+oqs6Mjr78///3+f5ucKzU1uk4OI/j5vPCxN+fosqdJ3hnAAAADHRSTlMAN4bC6//oX+wj1USkbhSpAAABF0lEQVR4AYTSBwKEIAwEQCxrjQY5g/X/7zwi1+vaHQsEzC1JmuVAkaWJeU1Z4JaqfKK6wVOa+m4t3tI+22etASIg7u+JX25AXR+A++5RG7USZAd3Yh7FT4x7tM0VeHYiSzeIW0F3LELfAd6c810/iBxIIdAkJgWo39aJr8i0LB0rpyZDUGamC/I0e1m3PmhmimAYT5Yj8uiciLiNgdwA4N25FRGtiouIA2cRbw+kXWGcV0uK+RPq6QomqBUm+4ikmJn0/bPzvh6fTbQ/EcsXlsUG5QYU2iFxB/lm+mhK9VT4f0wMdhug1tPHaG8DRlDh4wBULjS8jWfBzu2tf47TVR/2M+pqSmr85CSACxRo2QHNmA0IWcHAAp4HJXYNfpWAAAAAElFTkSuQmCC',
+    },
+    zearn: {
+        url: 'https://www.zearn.org/student-home',
+        title: 'Student Home - Zearn',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAYFBMVEVHcExFvdM6utGKxq8/u9I8utFIvtM8utFFvNM+u9JJvdNAu9Jnxdg/u9E9utFIvtQ/u9E8utFxydolutn1z0D+0Cr1z0H1zj/1z0L1z0H1z0H1zj/1z0H31GD1z0H10EovluFDAAAAIHRSTlMA2P8Vrf8v9EuXcci5auP/XGR9wLmh4v9CW5Vod9EfI0NLlVAAAACgSURHgBddDFAcRADATBRTMzO/8ojyTzXH9rUeKUVFKLPxllrXUEzrXfPIy+/RVglaQ+1lD91GCNSENxLk5cm34jvKhnP6lvlvMf7zyVHJhh5HzXdS+Yi2eFIjPAPLYQmGMpCUyDx+yVVIisqilkTUt1wCq2HtjANgKb2CZgXcvNc1VV9TAMJ2wfNbvp9tmyK8B1x/5hlThaur4fT/Ek3sqLEwwJ2FthAAAAAElFTkSuQmCC',
+    },
+    pearassessment: {
+        url: 'https://app.edulastic.com/home/assignments/',
+        title: 'Pear Assessment',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAY1BMVEVHcEwrOkIsO0I0QkMoN0InNkIiMUEnNUImNUEqOEIwPkI0QkMzQEMxP0IyQEMxP0PI21fL3lfQ5FjO4Vi4ylR2hUphcEVNXEKer1CnuVFqekbU6FmAlTmvwVNbaUdATkQAF0B9mIX1AAAAEHRSTlMApyf621LnZv7HHJjFfLc+PB2r8AAAALxJREFUKJHFkEkWgzAMQwljAg+I7cxhuv8pC3RHwrbV9luS7aL4q/qpHpathyqGRVWGxVTXk4GCXZTHiJVVYY6v5rXPumDhb37zGe1PnWbdFgLh1WdiuICWsbY41FuUptE0GcgUXBMVTxjTJW6RZarxtBOdIYm0MXdtoFYDMs7W7UkEFFYj085obKocgHSaw3FGCPFbUIe7ls7R2JMHzYyOXfrDnHgEQo+d9emjJjVPKGZ6EfpcSbSvyf/+dPiDkDIV9PRLKAAAAAElFTkSuQmCC',
+    },
+    googleslides: {
+        url: 'https://docs.google.com/presentation/',
+        title: 'Google Slides',
+        icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAaVBMVEX0tAD///8AAAD75ajzqwDzrQD52Iv//fb4twDxsgD7uQDprAAiGQDzsABkSgD/vQAZEgCugQCVbgDdowAqIAAmHADKlQD3y1vAjgC7iQCccwAUDwBOOgCNaAAzJQDhpwBrTwBdRAANCgDVPr2xAAACrUlEQVR4nO3c23KbMBCAYVVtEiEIBws72KD48P4PWXBKnMRJp06HYdn5vzvf7T9ac7jB2I/a53zVhMQsTRK2u7xur3rM+59ZF/eF927ucb/FOV+E2NV/KVznVeLnnvP/OJ9sD/VXhccqXXjfmUur/PRZYRmDhr6BD7G8LsyadJn/vs+4tMk+FmYbPX0Dv8neF2oL7I9xTDRKAy+J58Ky0XKNecs15Vh4iunc00wijWNhHvTt6MCF40thXWnc0YGv1ufCg84dHaT5UFhvde7owFdZX9gt70Xp3yVdXxi1/gsHPlrTKr2Q/rFvTV3MPcSkimeTa17Sfk1zs1O9pMavjOJ7xcA1Jsw9w8SC0Xw3HGjvAwAAAAAAAAAAAAAAy/D4a1kebw58+rksT7cm3t3/WJb7u5sLH+ae+SYPFFIoHoUUykchhfJRSKF8FFIoH4UUykchhfJRSKF8FFIoH4UUykchhfJRSKF8FFIoH4UUykchhfJRSKF8FFIoH4UUykchhfJRSKF8FFIoH4UUykchhfJRSKF8FFIoH4UUykchhfJRSKF83ymce+Yb3Vyo/zvC+r8FDQAAAAAAAAAAAAAAMIFk7gEmlpgw9wgTC6Zxc88wKbc1Kz/3EJNyO5PrLvS5eS7mHmJSRW3a/dxDTMmF1tioeU19tMZ2mu+ISdcXZpXeQ3Tbui+0eTr3IJNJD3YoXKs9RF/V50J7DDqfa1zI7UuhjTr3NI2nsbBU+XDqm9KOhTbb6Et0m8xeChUmjoFjYZ+o64L6GvhaaLMm1XOMLm3GwEuhLWPQcow+xNJeF9pTXqUaGn1aHS9VbwutrQ/bxC97V51PqnxtvyrsG7sYCu+WWem8L/axy94nfSjstXW+24blvVIloVnlz+1Vz29MQXJQo6ciNgAAAABJRU5ErkJggg==',
+    }
 };
 
 function setPreset(object) {
