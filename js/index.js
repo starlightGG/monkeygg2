@@ -853,9 +853,8 @@ function setPreset(object) {
     preferences.maskTitle = object.title;
     preferences.maskIconUrl = object.icon;
     localStorage.setItem('preferences', JSON.stringify(preferences));
-    window.open('https://starlightgg.github.io/monkeygg2/');
-    window.close();
-    alert('Preset will take place upon next opening!');
+    
+    alert('Preset will take place upon next opening! Please close this window and reopen!');
 
 }
 
