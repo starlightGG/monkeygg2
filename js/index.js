@@ -744,7 +744,7 @@ const preferencesDefaults = {
     cloakUrl: 'https://classroom.google.com',
     mask: true,
     maskTitle: 'Home',
-    maskIconUrl: 'https://ssl.gstatic.com/classroom/ic_product_classroom_32.png',
+    maskIconUrl: 'https://ssl.gstatic.com/classroom/favicon.ico',
     background: true,
 };
 
