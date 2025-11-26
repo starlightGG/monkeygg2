@@ -1,4 +1,5 @@
 let currentMenu = $('.homepage');
+
 $('.column button .card').on('click', function () {
     let nextMenu = this.getAttribute('data');
 
@@ -518,7 +519,7 @@ function toggleStar(event, star) {
 
       var fakeElement = document.createElement('a');
       fakeElement.href = dataURL;
-      fakeElement.download = 'starlight.data';
+      fakeElement.download = 'monkey.data';
       fakeElement.click();
       URL.revokeObjectURL(dataURL);
   }
@@ -755,7 +756,7 @@ const preferencesDefaults = {
     cloakUrl: 'https://classroom.google.com',
     mask: true,
     maskTitle: 'Home',
-    maskIconUrl: 'https://ssl.gstatic.com/classroom/favicon.ico',
+    maskIconUrl: 'https://ssl.gstatic.com/classroom/ic_product_classroom_32.png',
     background: true,
 };
 
@@ -859,14 +860,13 @@ const presets = {
     }
 };
 
+
 function setPreset(object) {
     preferences.cloakUrl = object.url;
     preferences.maskTitle = object.title;
     preferences.maskIconUrl = object.icon;
     localStorage.setItem('preferences', JSON.stringify(preferences));
-    
     alert('Preset will take place upon next opening! Please close this window and reopen!');
-
 }
 
 function updatePreset() {
@@ -954,6 +954,7 @@ document.getElementById('upload').addEventListener('click', function () {
         localStorage.removeItem("cloakTabOpened");
     });
 } */
+
 if (preferences.mask) {
     mask();
 }
