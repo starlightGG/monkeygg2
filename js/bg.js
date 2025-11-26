@@ -199,7 +199,7 @@ function draw() {
     if (!inGame && document.visibilityState == 'visible') {
         time++;
         // Clear background with low opacity to create faint trails of the mesh
-        background(0, 15); 
+        background(0, 30); 
 
         for (let p of Particles) {
             p.update();
