@@ -10,8 +10,8 @@ $('.column button .card').on('click', function () {
         }
         $('#everything-else').fadeOut(300, () => {
             $('#page-loader').fadeIn(200);
-            $('#page-loader iframe').attr('src', config['proxyPath'] || '/proxy');
-            $('#page-loader iframe')[0].focus();
+$('#page-loader iframe').attr('src', config['proxyPath'] || 'https://auth.teaching.za.com/indev');
+                        $('#page-loader iframe')[0].focus();
         });
         currentMenu = $('#page-loader');
         inGame = !preferences.background; // if background is disabled (false) then inGame is set to to true turning off the background
