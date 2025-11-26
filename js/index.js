@@ -1040,7 +1040,6 @@ document.getElementById('upload').addEventListener('click', function () {
         localStorage.removeItem("cloakTabOpened");
     });
 } */
-
 if (preferences.mask) {
     mask();
 }
