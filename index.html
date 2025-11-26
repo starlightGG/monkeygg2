@@ -111,43 +111,34 @@
     </div>
 
 </div>
-      <!-- 3. Modal HTML Structure (from modal_structure.html) -->
-    <!-- It's best to place this right before the closing </body> tag -->
-    <div id="custom-modal" class="modal-overlay" class"sticky-on-scroll" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md p-6 m-4" 
-             role="document">
-            
-            <!-- Modal Header -->
-            <div class="flex justify-between items-start border-b pb-3 mb-4">
-                <h3 id="modal-title" class="text-xl font-bold text-gray-900">Notification</h3>
-                <button 
-                    onclick="closeModal()" 
-                    class="text-gray-400 hover:text-gray-600 transition"
-                    aria-label="Close modal"
-                >
-                    <!-- Close icon (X) -->
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
+<div id="custom-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content" role="document">
+        
+        <div>
+            <h3 id="modal-title">Notification</h3>
+            <button
+                onclick="closeModal()"
+                aria-label="Close modal"
+            >
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
 
-            <!-- Modal Body (Message) -->
-            <div class="mb-6">
-                <p id="modal-message" class="text-gray-700 leading-relaxed">
-                    Default message.
-                </p>
-            </div>
+        <div>
+            <p id="modal-message">
+                Default message.
+            </p>
+        </div>
 
-            <!-- Modal Footer (Action Button) -->
-            <div class="flex justify-end">
-                <button 
-                    onclick="closeModal()" 
-                    class="bg-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-700 transition duration-150"
-                >
-                    OK
-                </button>
-            </div>
+        <div>
+            <button
+                onclick="closeModal()"
+            >
+                OK
+            </button>
         </div>
     </div>
+</div>
   <section id="everything-else">
 
     <h1 id="title">StarlightGG2</h1>
