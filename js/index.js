@@ -11,6 +11,8 @@ $('.column button .card').on('click', function () {
         $('#everything-else').fadeOut(300, () => {
             $('#page-loader').fadeIn(200);
 $('#page-loader iframe').attr('src', 'https://auth.teaching.za.com/indev');
+            showModal('When you are trying to google something, use start.duckduckgo.com as an alternative to google since google search is broken. When you are using duckduckgo, use the textbox in the duckduckgo site'); 
+            showModal('List of services that dont work: (may not list all, please contact owner if you find one):\nNow.gg\nGoogle (any services that relate to google)\nRoblox\nYoutube');
             $('#page-loader iframe')[0].focus();
         });
         currentMenu = $('#page-loader');
