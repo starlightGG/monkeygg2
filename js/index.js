@@ -672,6 +672,7 @@ document.addEventListener('keydown', onKeyPress);
 document.addEventListener('keyup', onKeyRelease);
 
 const defaultColorSettings = {
+    /*
     bg: '#202020',
     'block-color': '#2b2b2b',
     'button-color': '#373737',
@@ -680,6 +681,15 @@ const defaultColorSettings = {
     'scrollbar-color': '#434343',
     'scroll-track-color': '#111',
     'font-color': '#dcddde',
+    */
+        bg: '#727288',
+    'block-color': '#464853',
+    'button-color': '#5F539D',
+    'games-color': '#544b6ca6',
+    'hover-color': '#736892',
+    'scrollbar-color': '#464859',
+    'scroll-track-color': '#5c5c61',
+    'font-color': '#eff3fb',
 };
 
 const colorSettings = JSON.parse(localStorage.getItem('colorSettings')) || defaultColorSettings;
