@@ -3,21 +3,21 @@
 
 :root {
 
-    --bg: #202020;
+    --bg: #727288;
 
-    --block-color: #2b2b2b;
+    --block-color: #464853;
 
-    --button-color: #373737;
+    --button-color: #5F539D;
 
-    --games-color: #373737a6;
+    --games-color: #544b6ca6;
 
-    --hover-color: #3c3c3c;
+    --hover-color: #736892;
 
-    --scrollbar-color: #434343;
+    --scrollbar-color: #464859;
 
-    --scroll-track-color: #111;
+    --scroll-track-color: #5c5c61;
 
-    --font-color: #dcddde;
+    --font-color: #eff3fb;
 
     --font-family: 'Assistant', sans-serif;
 
