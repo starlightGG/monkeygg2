@@ -1,147 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Trispace:wght@100&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@500&display=swap');
-  /* --- 1. MODAL OVERLAY (The Dark Background) --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Semi-transparent black backdrop for dimming the background */
-    background-color: rgba(0, 0, 0, 0.7);
-    
-    /* Initially hidden with smooth transition */
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: 100; /* High z-index to cover everything */
-    
-    /* Center the modal content using Flexbox */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* State when the modal is active (visible) */
-.modal-overlay.active {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* --- 2. MODAL CONTENT (The Main Box) --- */
-.modal-content {
-    position: relative;
-    
-    /* Neumorphic styling (REPLACING bg-white, rounded-xl, shadow-2xl) */
-    background-color: var(--secondary-bg);
-    padding: 30px;
-    border-radius: var(--border-radius);
-    
-    /* Size & Animation (REPLACING w-full, max-w-md, p-6, m-4) */
-    max-width: 400px; 
-    width: 90%;
-    max-height: 90vh; 
-    overflow-y: auto; 
-    
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-}
-
-.modal-overlay.active .modal-content {
-    transform: scale(1);
-}
-
-/* --- 3. MODAL HEADER FIXES --- */
-/* The HTML uses inline divs for header, message, and footer. We target these specific sections. */
-
-/* Styling for the header div (REPLACING flex justify-between items-start border-b pb-3 mb-4) */
-.modal-content > div:nth-child(1) { 
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 1px solid var(--line-color);
-    padding-bottom: 12px;
-    margin-bottom: 16px;
-}
-
-/* Styling for the h3 title (REPLACING text-xl font-bold text-gray-900) */
-#modal-title {
-    margin: 0;
-    font-size: 1.25em;
-    font-weight: bold;
-    color: var(--text-color);
-}
-
-/* --- 4. CLOSE (X) BUTTON FIX --- */
-/* This targets the button inside the header div */
-.modal-content > div:nth-child(1) button { 
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    line-height: 1; 
-    padding: 4px;
-    border-radius: 50%;
-    transition: color 0.2s ease, background-color 0.2s ease;
-}
-
-/* Styling for the SVG (REPLACING text-gray-400 hover:text-gray-600) */
-.modal-content > div:nth-child(1) button svg {
-    display: block;
-    width: 24px;
-    height: 24px;
-    color: var(--text-color);
-    transition: color 0.2s;
-}
-
-.modal-content > div:nth-child(1) button:hover svg {
-    color: var(--primary-color);
-}
-
-
-/* --- 5. MODAL BODY (Message) FIXES --- */
-/* Styling for the message div (REPLACING mb-6) */
-.modal-content > div:nth-child(2) {
-    margin-bottom: 24px;
-}
-
-/* Styling for the message paragraph (REPLACING text-gray-700 leading-relaxed) */
-#modal-message {
-    color: var(--text-color);
-    line-height: 1.6;
-    margin: 0;
-}
-
-
-/* --- 6. MODAL FOOTER & OK BUTTON FIXES --- */
-/* Styling for the footer div (REPLACING flex justify-end) */
-.modal-content > div:nth-child(3) {
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* Styling for the OK Button (REPLACING bg-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-700) */
-.modal-content > div:nth-child(3) button {
-    /* Primary button Neumorphic style */
-    background-color: var(--primary-color);
-    color: white; 
-    padding: 10px 20px;
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid var(--primary-dark);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    
-    /* Animation and Shadow */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); 
-    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
-}
-
-.modal-content > div:nth-child(3) button:hover {
-    background-color: var(--primary-dark);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transform: scale(0.98);
-}
+ 
+/* --- CSS Variables --- */
 :root {
     --bg: #202020;
     --block-color: #2b2b2b;
@@ -177,6 +37,7 @@
     --group-background-focus: #678efe;
 }
 
+/* --- Scrollbar Styles --- */
 ::-webkit-scrollbar {
     width: 20px;
 }
@@ -204,6 +65,7 @@
     );
 }
 
+/* --- Base Styles --- */
 html {
     background: var(--bg);
 }
@@ -235,6 +97,7 @@ body.noscript {
     z-index: 999;
 }
 
+/* --- Background and Layout --- */
 #particles {
     position: absolute;
     z-index: 0;
@@ -284,6 +147,7 @@ body.noscript {
     top: 2.5%;
 }
 
+/* --- Settings Panel --- */
 .setting-bg {
     width: 75%;
     background-color: var(--games-color);
@@ -311,6 +175,24 @@ body.noscript {
     pointer-events: none;
 }
 
+h4 {
+    font-family: 'Trispace', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+}
+
+.setting h5 {
+    font-family: 'Trispace', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 1000;
+    margin: 0 0 1% 0;
+}
+
+.setting {
+    margin: 5% 0;
+}
+
+/* --- Game List --- */
 #gamesList {
     list-style: none;
     padding: 0;
@@ -345,6 +227,7 @@ body.noscript {
     color: gold;
 }
 
+/* --- Search and Sort --- */
 .searchbar {
     display: flex;
     width: 75%;
@@ -398,6 +281,7 @@ body.noscript {
     cursor: pointer;
 }
 
+/* --- Logo and Navigation --- */
 logo img {
     z-index: 50;
     position: fixed;
@@ -422,36 +306,7 @@ img[alt='Proxy Icon'] {
     margin: -1rem 0;
 }
 
-@media screen and (max-height: 700px),
-(max-width: 1000px) {
-    .card .img-container {
-        margin: 1rem 0;
-        max-width: 128px;
-        max-height: 128px;
-    }
-    .card .img-container > img,
-    svg {
-        max-width: 128px;
-        max-height: 128px;
-    }
-    logo img {
-        top: -4%;
-        left: -2%;
-    }
-    .card p {
-        font-size: 1rem;
-    }
-    .card h5 {
-        font-size: 1.8rem;
-    }
-    #gamesList li {
-        font-size: 0.95rem;
-    }
-    #gamesList {
-        height: 55vh;
-    }
-}
-
+/* --- Card Grid --- */
 .card .img-container {
     max-width: 256px;
     max-height: 256px;
@@ -513,6 +368,7 @@ svg {
     transform: scale(1.05);
 }
 
+/* --- Iframe/Page Loader --- */
 #page-loader iframe {
     width: 100%;
     height: 100%;
@@ -525,6 +381,260 @@ svg {
     border: 0;
 }
 
+/* --- Dropdown Styles --- */
+#presets {
+    border: 1px solid var(--bg);
+    border-radius: 3px;
+    padding: 10px;
+    width: 50%;
+    margin-bottom: 10px;
+    font-size: 16px;
+    outline: none;
+    background-color: var(--games-color);
+    color: var(--font-color);
+    cursor: pointer;
+}
+
+#presets::after {
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: var(--font-color);
+}
+
+#presets option {
+    background-color: var(--bg);
+    color: var(--font-color);
+}
+
+#presets option:hover {
+    background-color: var(--hover-color);
+}
+
+#presets option:checked {
+    background-color: var(--scrollbar-color);
+}
+
+/* --- Input and Buttons --- */
+.text-field {
+    border: 1px solid var(--bg);
+    border-radius: 3px;
+    padding: 10px;
+    width: 50%;
+    margin-bottom: 10px;
+    font-size: 16px;
+    outline: none;
+    background-color: var(--games-color);
+    color: var(--font-color);
+}
+
+.submit-button,
+#disableCloak {
+    background-color: var(--button-color);
+    color: var(--font-color);
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 20%;
+}
+
+.submit-button:hover,
+.save-button:hover,
+#disableCloak:hover {
+    background-color: var(--hover-color);
+}
+
+.save-button {
+    background-color: var(--button-color);
+    color: var(--font-color);
+    border-radius: 12px;
+    border: solid transparent;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 20%;
+}
+
+.color-input {
+    border: 1px solid var(--bg);
+    border-radius: 3px;
+    padding: 5px;
+    margin-bottom: 10px;
+    outline: none;
+    background-color: var(--games-color);
+    color: var(--font-color);
+}
+
+.color-input:hover {
+    border-color: var(--hover-color);
+}
+
+/* --- In-Game Navigation Buttons --- */
+button.in-game-button {
+    cursor: pointer;
+    position: absolute;
+    z-index: 9999;
+    top: 61px;
+    left: 0;
+    width: 75px;
+    height: 50px;
+    background: var(--hover-color);
+    border-radius: 0 290486px 290486px 0;
+    color: #000;
+    padding: 0 10px;
+    line-height: 50px;
+    min-height: 50px;
+    border: none;
+    border-bottom: 3px solid var(--font-color);
+    will-change: transform;
+    animation: bounceY 2s 0.5s; /* bounceY is not defined here, but kept for context */
+    transition: transform 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button.in-game-button svg {
+    pointer-events: none;
+    color: var(--font-color);
+    margin-right: 0.625rem;
+    display: inline-block;
+}
+
+button.in-game-button img {
+    pointer-events: none;
+    width: 33px;
+}
+
+button.in-game-button:active {
+    background: #aaa;
+}
+
+button.in-game-button[attr-active='true'] {
+    transform: translateX(0);
+}
+
+button.in-game-button:not(hover) {
+    transform: translateX(-32px);
+}
+
+button.in-game-button:hover,
+button.in-game-button:active {
+    transform: translateX(0px);
+}
+
+@media (max-height: 350px) and (orientation: landscape) {
+    button.in-game-button[attr-active='true'] {
+        transform: translateX(-75px);
+    }
+}
+
+button.in-game-button[attr-snapped='true'] svg {
+    display: none;
+}
+
+button.in-game-button[attr-snapped='true'] img {
+    transform: translate(-5px);
+}
+
+#refresh {
+    right: 0;
+    border-radius: 290486px 0 0 290486px;
+    left: auto;
+}
+
+#refresh:not(hover) {
+    transform: translateX(32px);
+}
+
+#refresh:hover {
+    transform: translateX(0px);
+}
+
+#refresh svg {
+    margin-right: 0;
+    margin-left: 0.625rem;
+    rotate: 180deg;
+}
+
+/* --- Disabled Modal (Simple) --- */
+#disabled {
+    background: var(--button-color);
+    filter: brightness(80%);
+    padding: 0;
+    font-family: var(--font-family);
+    font-size: 1.5rem;
+    max-width: 20vw;
+    text-align: center;
+    color: red;
+}
+
+#disabled[open] {
+    animation: fade 0.2s ease-in-out forwards;
+}
+
+#disabled div {
+    padding: 3rem;
+}
+
+#disabled::backdrop {
+    pointer-events: disabled;
+    backdrop-filter: blur(5px);
+}
+
+@keyframes fade {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 0.9;
+    }
+}
+
+#disableCloak {
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-family: var(--font-family);
+}
+
+/* --- Media Queries --- */
+@media screen and (max-height: 700px),
+(max-width: 1000px) {
+    .card .img-container {
+        margin: 1rem 0;
+        max-width: 128px;
+        max-height: 128px;
+    }
+    .card .img-container > img,
+    svg {
+        max-width: 128px;
+        max-height: 128px;
+    }
+    logo img {
+        top: -4%;
+        left: -2%;
+    }
+    .card p {
+        font-size: 1rem;
+    }
+    .card h5 {
+        font-size: 1.8rem;
+    }
+    #gamesList li {
+        font-size: 0.95rem;
+    }
+    #gamesList {
+        height: 55vh;
+    }
+}
+
+/* --- Switch Animations (CSS only) --- */
 .switch {
     margin: auto;
     display: inline-block;
@@ -692,242 +802,140 @@ input:checked + .switch__wrapper .switch__toggle {
     }
 }
 
-/* Dropdown styles */
-#presets {
-  border: 1px solid var(--bg);
-  border-radius: 3px;
-  padding: 10px;
-  width: 50%;
-  margin-bottom: 10px;
-  font-size: 16px;
-  outline: none;
-  background-color: var(--games-color);
-  color: var(--font-color);
-  cursor: pointer; 
-}
 
-#presets::after {
-  content: '\25BC'; 
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  color: var(--font-color);
-}
-
-#presets option {
-  background-color: var(--bg);
-  color: var(--font-color);
-}
-
-#presets option:hover {
-  background-color: var(--hover-color);
-}
-
-#presets option:checked {
-  background-color: var(--scrollbar-color);
-}
-
-
-/*input*/
-.text-field {
-    border: 1px solid var(--bg);
-    border-radius: 3px;
-    padding: 10px;
-    width: 50%;
-    margin-bottom: 10px;
-    font-size: 16px;
-    outline: none;
-    background-color: var(--games-color);
-    color: var(--font-color);
-}
-
-/* Submit button styles */
-.submit-button,
-#disableCloak {
-    background-color: var(--button-color);
-    color: var(--font-color);
-    border: none;
-    border-radius: 3px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 20%;
-}
-
-/* Hover effect for the button */
-.submit-button:hover,
-.save-button:hover,
-#disableCloak:hover {
-    background-color: var(--hover-color);
-}
-
-.save-button {
-    background-color: var(--button-color);
-    color: var(--font-color);
-    border-radius: 12px;
-    border: solid transparent;
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 20%;
-}
-
-.color-input {
-  border: 1px solid var(--bg);
-  border-radius: 3px;
-  padding: 5px; 
-  margin-bottom: 10px;
-  outline: none;
-  background-color: var(--games-color);
-  color: var(--font-color);
-}
-
-.color-input:hover {
-  border-color: var(--hover-color);
-}
-
-h4 {
-    font-family: 'Trispace', sans-serif;
-    font-size: 2.5rem;
-    font-weight: 900;
-}
-
-.setting h5 {
-    font-family: 'Trispace', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 1000;
-    margin: 0 0 1% 0;
-}
-
-.setting {
-    margin: 5% 0;
-}
-
-button.in-game-button {
-    cursor: pointer;
-    position: absolute;
-    z-index: 9999;
-    top: 61px;
+/* --- MODAL OVERLAY (The Dark Background) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
     left: 0;
-    width: 75px;
-    height: 50px;
-    background: var(--hover-color);
-    border-radius: 0 290486px 290486px 0;
-    color: #000;
-    padding: 0 10px;
-    line-height: 50px;
-    min-height: 50px;
-    border: none;
-    border-bottom: 3px solid var(--font-color);
-    will-change: transform;
-    animation: bounceY 2s 0.5s;
-    transition: transform 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    width: 100%;
+    height: 100%;
+    /* Semi-transparent black backdrop for dimming the background */
+    background-color: rgba(0, 0, 0, 0.7);
+
+    /* Initially hidden with smooth transition */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 100; /* High z-index to cover everything */
+
+    /* Center the modal content using Flexbox */
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
-button.in-game-button svg {
-    pointer-events: none;
-    color: var(--font-color);
-    margin-right: 0.625rem;
-    display: inline-block;
+/* State when the modal is active (visible) */
+.modal-overlay.active {
+    visibility: visible;
+    opacity: 1;
 }
 
-button.in-game-button img {
-    pointer-events: none;
-    width: 33px;
+/* --- MODAL CONTENT (The Main Box) - STATIC DARK/BLUE --- */
+.modal-content {
+    position: relative;
+
+    /* STATIC DARK BACKGROUND */
+    background-color: #2b2b2b;
+    padding: 30px;
+    border-radius: 12px;
+
+    /* Size & Animation */
+    max-width: 400px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
 }
 
-button.in-game-button:active {
-    background: #aaa;
+.modal-overlay.active .modal-content {
+    transform: scale(1);
 }
 
-button.in-game-button[attr-active='true'] {
-    transform: translateX(0);
+/* --- MODAL HEADER FIXES --- */
+.modal-content > div:nth-child(1) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #444444; /* Darker line color */
+    padding-bottom: 12px;
+    margin-bottom: 16px;
 }
 
-button.in-game-button:not(hover) {
-    transform: translateX(-32px);
+/* Styling for the h3 title */
+#modal-title {
+    margin: 0;
+    font-size: 1.25em;
+    font-weight: bold;
+    color: #dcddde; /* Light text color */
 }
 
-button.in-game-button:hover,
-button.in-game-button:active {
-    transform: translateX(0px);
+/* --- CLOSE (X) BUTTON FIX --- */
+.modal-content > div:nth-child(1) button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 50%;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-@media (max-height: 350px) and (orientation: landscape) {
-    button.in-game-button[attr-active='true'] {
-        transform: translateX(-75px);
-    }
+/* Styling for the SVG */
+.modal-content > div:nth-child(1) button svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    color: #99a3ba; /* Muted light color for the icon */
+    transition: color 0.2s;
 }
 
-button.in-game-button[attr-snapped='true'] svg {
-    display: none;
+.modal-content > div:nth-child(1) button:hover svg {
+    color: #4f80ff; /* Blue hover color */
 }
 
-button.in-game-button[attr-snapped='true'] img {
-    transform: translate(-5px);
+
+/* --- MODAL BODY (Message) FIXES --- */
+.modal-content > div:nth-child(2) {
+    margin-bottom: 24px;
 }
 
-#refresh {
-    right: 0;
-    border-radius: 290486px 0 0 290486px;
-    left: auto;
+/* Styling for the message paragraph */
+#modal-message {
+    color: #cdd9ed; /* Slightly muted light text for body */
+    line-height: 1.6;
+    margin: 0;
 }
 
-#refresh:not(hover) {
-    transform: translateX(32px);
+
+/* --- MODAL FOOTER & OK BUTTON FIXES - BLUE STYLES --- */
+.modal-content > div:nth-child(3) {
+    display: flex;
+    justify-content: flex-end;
 }
 
-#refresh:hover {
-    transform: translateX(0px);
-}
-
-#refresh svg {
-    margin-right: 0;
-    margin-left: 0.625rem;
-    rotate: 180deg;
-}
-
-#disabled {
-    background: var(--button-color);
-    filter: brightness(80%);
-    padding: 0;
-    font-family: var(--font-family);
-    font-size: 1.5rem;
-    max-width: 20vw;
-    text-align: center;
-    color: red;
-}
-
-#disabled[open] {
-    animation: fade 0.2s ease-in-out forwards;
-}
-
-#disabled div {
-    padding: 3rem;
-}
-
-#disabled::backdrop {
-    pointer-events: disabled;
-    backdrop-filter: blur(5px);
-}
-
-@keyframes fade {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 0.9;
-    }
-}
-
-#disableCloak {
-    border-radius: 10px;
-    font-size: 1.5rem;
+/* Styling for the OK Button */
+.modal-content > div:nth-child(3) button {
+    /* Primary button Blue/Indigo style */
+    background-color: #4f80ff; /* Primary Blue color */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
     font-weight: 600;
-    font-family: var(--font-family);
+    cursor: pointer;
+    border: 1px solid #3d6ae0; /* Darker blue border */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    /* Animation and Shadow */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.modal-content > div:nth-child(3) button:hover {
+    background-color: #3d6ae0; /* Darker blue on hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transform: scale(0.98);
 }
