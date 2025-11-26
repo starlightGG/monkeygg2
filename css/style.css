@@ -2,18 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@500&display=swap');
 
 :root {
-    /* Core palette */
-    --bg: #0d1b2a;              /* deep navy background */
-    --block-color: #1b263b;     /* slightly lighter navy */
-    --button-color: #243b55;    /* bluish button background */
-    --games-color: #1e2f47;     /* section background */
-    --hover-color: #2c3e60;     /* hover effect with blue tint */
-    --scrollbar-color: #3a506b; /* scrollbar thumb */
-    --scroll-track-color: #0a0f1c; /* scrollbar track */
-    --font-color: #dce3f2;      /* light bluish-gray text */
+    --bg: #202020;
+    --block-color: #2b2b2b;
+    --button-color: #373737;
+    --games-color: #373737;
+    --hover-color: #3c3c3c;
+    --scrollbar-color: #434343;
+    --scroll-track-color: #111;
+    --font-color: #dcddde;
     --font-family: 'Assistant', sans-serif;
 
-    /* Animation variables */
     --displacement: -0.1rem;
     --tremble: -10deg;
     --trembleF: 5deg;
@@ -24,20 +22,19 @@
 
     --time: 250ms;
 
-    /* Input fields */
+    /*not sure where these vars are used*/
     --input-color: #99a3ba;
     --input-border: #cdd9ed;
-    --input-background: #1b263b;   /* match dark theme */
-    --input-placeholder: #8fa1b8;  /* bluish placeholder */
-    --input-border-focus: #4a90e2; /* bright blue focus */
+    --input-background: #fff;
+    --input-placeholder: #cbd1dc;
+    --input-border-focus: #275efe;
     --group-color: var(--input-color);
     --group-border: var(--input-border);
-    --group-background: #162436;
+    --group-background: #eef4ff;
     --group-color-focus: #fff;
     --group-border-focus: var(--input-border-focus);
-    --group-background-focus: #2c3e60;
+    --group-background-focus: #678efe;
 }
-
 
 ::-webkit-scrollbar {
     width: 20px;
