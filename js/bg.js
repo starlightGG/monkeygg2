@@ -4,7 +4,7 @@ Vars
 const deg = (a) => (Math.PI / 180) * a;
 const rand = (v1, v2) => Math.floor(v1 + Math.random() * (v2 - v1));
 const opt = {
-    particles: window.width / 500 ? 250 : 125,
+    particles: window.innerWidth / 500 ? 200 : 100, // Reduced particle count for performance with the connection step
     noiseScale: 0.005,
     angle: (Math.PI / 180) * -90,
     h1: rand(0, 360),
@@ -13,14 +13,19 @@ const opt = {
     s2: rand(20, 90),
     l1: rand(30, 80),
     l2: rand(30, 80),
-    strokeWeight: 2,
-    tail: 82,
+    strokeWeight: 1, // Line thickness for the mesh
+    tail: 82, 
+    // New setting for neighbor connection
+    neighbors: 3, 
+    maxConnectionDistance: 150, // Only connect if particles are close enough
 };
 
 changeTitleColor();
 
 const Particles = [];
 let time = 0;
+let inGame = false; // Moved to global scope for the event listener
+
 document.body.addEventListener('click', () => {
     if (inGame) {
         return;
@@ -31,7 +36,8 @@ document.body.addEventListener('click', () => {
     opt.s2 = rand(20, 90);
     opt.l1 = rand(30, 80);
     opt.l2 = rand(30, 80);
-    opt.angle += deg(random(60, 60)) * (Math.random() > 0.5 ? 1 : -1);
+    // Use Math.random() for consistency since p5's random() is not global
+    opt.angle += deg(rand(60, 60)) * (Math.random() > 0.5 ? 1 : -1); 
     setTimeout(() => {
         changeTitleColor();
     }, 120);
@@ -42,7 +48,7 @@ document.body.addEventListener('click', () => {
 });
 
 /*--------------------
-Particle (Triangle/Polygonal)
+Particle (Position Only)
 --------------------*/
 class Particle {
     constructor(x, y) {
@@ -59,8 +65,6 @@ class Particle {
         this.sat = this.hueSem > 0.5 ? opt.s1 : opt.s2;
         this.light = this.hueSem > 0.5 ? opt.l1 : opt.l2;
         this.maxSpeed = this.hueSem > 0.5 ? 3 : 2;
-        // Size determines the side length of the triangle
-        this.size = this.hueSem > 0.5 ? 6 : 5; 
     }
 
     randomize() {
@@ -69,8 +73,6 @@ class Particle {
         this.sat = this.hueSem > 0.5 ? opt.s1 : opt.s2;
         this.light = this.hueSem > 0.5 ? opt.l1 : opt.l2;
         this.maxSpeed = this.hueSem > 0.5 ? 3 : 2;
-        // Update size on randomization
-        this.size = this.hueSem > 0.5 ? 6 : 5;
     }
 
     update() {
@@ -125,31 +127,56 @@ class Particle {
         }
     }
 
-    // MODIFIED: Renders a filled triangle centered at (this.x, this.y)
+    // MODIFIED: No longer renders a shape or trail. It only updates its position.
     render() {
-        fill(`hsla(${this.hue}, ${this.sat}%, ${this.light}%, .8)`);
-        noStroke(); 
-
-        // Temporarily translate and rotate the canvas to draw a triangle centered at (this.x, this.y)
-        push();
-        translate(this.x, this.y);
-        
-        // Optional: Rotate the triangle to align with the direction of flow (a)
-        let a = Math.atan2(this.vy, this.vx) + deg(90); 
-        rotate(a);
-
-        // Define the vertices of the triangle relative to the center (0, 0)
-        let s = this.size;
-        triangle(
-            0, -s,           // Top vertex
-            -s * 0.866, s * 0.5, // Bottom-left vertex (0.866 is approx sin(60)/cos(60) factor)
-            s * 0.866, s * 0.5  // Bottom-right vertex
-        );
-        
-        pop(); // Restore the original canvas transformation
-        this.updatePrev();
+        // This is intentionally left empty
+        this.updatePrev(); 
     }
 }
+
+/*--------------------
+Connection Logic
+--------------------*/
+function connectParticles() {
+    // Stop drawing any fill or shape inside this function
+    noFill(); 
+    strokeWeight(opt.strokeWeight);
+
+    for (let i = 0; i < Particles.length; i++) {
+        let p1 = Particles[i];
+        let distances = [];
+
+        // 1. Calculate distances to all other particles
+        for (let j = 0; j < Particles.length; j++) {
+            if (i === j) continue; // Skip self
+
+            let p2 = Particles[j];
+            // Use p5.js built-in function to calculate distance
+            let d = dist(p1.x, p1.y, p2.x, p2.y); 
+
+            if (d < opt.maxConnectionDistance) {
+                distances.push({ dist: d, particle: p2 });
+            }
+        }
+        
+        // 2. Sort by distance (closest first)
+        distances.sort((a, b) => a.dist - b.dist);
+
+        // 3. Draw lines to the closest N neighbors
+        for (let k = 0; k < Math.min(opt.neighbors, distances.length); k++) {
+            let p2 = distances[k].particle;
+            let d = distances[k].dist;
+            
+            // Map the distance to an alpha value (closer = more opaque)
+            let alpha = map(d, 0, opt.maxConnectionDistance, 0.8, 0.05);
+
+            // Set stroke color using p1's color and calculated alpha
+            stroke(`hsla(${p1.hue}, ${p1.sat}%, ${p1.light}%, ${alpha})`);
+            line(p1.x, p1.y, p2.x, p2.y);
+        }
+    }
+}
+
 
 /*--------------------
 Setup
@@ -161,23 +188,26 @@ function setup() {
     for (let i = 0; i < opt.particles; i++) {
         Particles.push(new Particle(Math.random() * width, Math.random() * height));
     }
-    // No rectMode or initial stroke settings needed for this triangle setup
+    // Set stroke cap to SQUARE for sharper line ends (optional, can be REMOVE)
+    strokeCap(SQUARE);
 }
 
 /*--------------------
 Draw
 --------------------*/
-let inGame = false;
 function draw() {
     if (!inGame && document.visibilityState == 'visible') {
         time++;
-        // Use a high alpha (95) to ensure distinct, sharp shapes and prevent trails
-        background(0, 95); 
+        // Clear background with low opacity to create faint trails of the mesh
+        background(0, 15); 
 
         for (let p of Particles) {
             p.update();
-            p.render();
+            // p.render() is intentionally left empty/removed
         }
+        
+        // NEW: Draw the connecting lines
+        connectParticles(); 
     } else {
         background(0);
     }
