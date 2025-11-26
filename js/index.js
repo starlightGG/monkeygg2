@@ -518,7 +518,7 @@ function toggleStar(event, star) {
 
       var fakeElement = document.createElement('a');
       fakeElement.href = dataURL;
-      fakeElement.download = 'monkey.data';
+      fakeElement.download = 'starlight.data';
       fakeElement.click();
       URL.revokeObjectURL(dataURL);
   }
