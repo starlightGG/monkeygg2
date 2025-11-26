@@ -1,100 +1,5 @@
 let currentMenu = $('.homepage');
-            // Get references to the modal elements
-        const modal = document.getElementById('custom-modal');
-        const modalMessage = document.getElementById('modal-message');
 
-        // Global queue holds message and the Promise resolver function for that message
-        const modalQueue = [];
-        // State variable to prevent overlapping modals
-        let isModalOpen = false;
-        // The resolve function for the currently displayed modal's promise
-        let currentResolver = null; 
-        
-        /**
-         * Public function to queue or show a modal with a specified message.
-         * Returns a Promise that resolves when the user dismisses the modal.
-         * @param {string} Mssg The message to display inside the modal.
-         * @returns {Promise<void>} A promise that resolves upon dismissal.
-         */
-        function showModal(Mssg) {
-            return new Promise(resolve => {
-                // 1. Add the new message and its resolver to the end of the queue
-                modalQueue.push({ Mssg, resolve });
-                console.log(`Message queued: "${Mssg.substring(0, 15)}...". Queue size: ${modalQueue.length}`);
-
-                // 2. Try to process the queue immediately
-                processQueue();
-            });
-        }
-        
-        /**
-         * Processes the next message in the queue and displays the modal if it's currently closed.
-         */
-        function processQueue() {
-            if (modalQueue.length > 0 && !isModalOpen) {
-                isModalOpen = true;
-
-                // Get the oldest message and its resolver from the front of the queue
-                const nextItem = modalQueue.shift();
-                
-                // Store the resolver so closeModal can use it
-                currentResolver = nextItem.resolve; 
-
-                // --- FIX: Replace \n with <br> and use innerHTML ---
-                // We use innerHTML to allow the <br> tags to render correctly.
-                const htmlMessage = nextItem.Mssg.replace(/\n/g, '<br>');
-
-                // 1. Update the message content using innerHTML
-                modalMessage.innerHTML = htmlMessage;
-
-                // 2. Make the modal visible and activate the transition
-                modal.classList.add('active');
-                
-                // 3. Set focus to the close button for accessibility
-                modal.querySelector('button').focus();
-            }
-        }
-        
-        /**
-         * Hides the current modal, resolves the waiting promise, and triggers the next one in the queue.
-         */
-        function closeModal() {
-            // Check if a modal is actually open
-            if (!isModalOpen) return;
-            
-            // 1. Hide the modal visually
-            modal.classList.remove('active');
-
-            // 2. Set state to closed
-            isModalOpen = false;
-            
-            // 3. Resolve the promise for the modal that was just closed
-            if (currentResolver) {
-                currentResolver();
-                currentResolver = null; // Clear the resolver
-            }
-            
-            // 4. Wait slightly for the CSS transition to complete (0.3s) before processing the next one
-            setTimeout(() => {
-                // Try to process the next message in the queue
-                processQueue();
-            }, 300); // 300ms matches the CSS transition duration
-        }
-        
-
-
-        // Event Listeners for closing the modal (these still call closeModal)
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && modal.classList.contains('active')) {
-                closeModal();
-            }
-        });
 $('.column button .card').on('click', function () {
     let nextMenu = this.getAttribute('data');
 
@@ -106,8 +11,8 @@ $('.column button .card').on('click', function () {
         $('#everything-else').fadeOut(300, () => {
             $('#page-loader').fadeIn(200);
 $('#page-loader iframe').attr('src', 'https://auth.teaching.za.com/indev');
-            showModal('When you are trying to google something, use start.duckduckgo.com as an alternative to google since google search is broken. When you are using duckduckgo, use the textbox in the duckduckgo site'); 
-            showModal('List of services that dont work: (may not list all, please contact owner if you find one):\nNow.gg\nGoogle (any services that relate to google)\nRoblox\nYoutube');
+            alert('When you are trying to google something, use start.duckduckgo.com as an alternative to google since google search is broken. When you are using duckduckgo, use the textbox in the duckduckgo site'); 
+            alert('List of services that dont work: (may not list all, please contact owner if you find one):\nNow.gg\nGoogle (any services that relate to google)\nRoblox\nYoutube');
             $('#page-loader iframe')[0].focus();
         });
         currentMenu = $('#page-loader');
