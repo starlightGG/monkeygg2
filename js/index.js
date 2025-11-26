@@ -1,7 +1,6 @@
 let currentMenu = $('.homepage');
 $('.column button .card').on('click', function () {
     let nextMenu = this.getAttribute('data');
-
     if (nextMenu === 'proxy') {
         if (!config['proxy']) {
             $('#disabled').showModal();
