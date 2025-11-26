@@ -42,7 +42,7 @@ document.body.addEventListener('click', () => {
 });
 
 /*--------------------
-Particle (Square/Polygonal)
+Particle (Triangle/Polygonal)
 --------------------*/
 class Particle {
     constructor(x, y) {
@@ -59,8 +59,8 @@ class Particle {
         this.sat = this.hueSem > 0.5 ? opt.s1 : opt.s2;
         this.light = this.hueSem > 0.5 ? opt.l1 : opt.l2;
         this.maxSpeed = this.hueSem > 0.5 ? 3 : 2;
-        // Size for the filled square (polygonal particle)
-        this.size = this.hueSem > 0.5 ? 4 : 3; 
+        // Size determines the side length of the triangle
+        this.size = this.hueSem > 0.5 ? 6 : 5; 
     }
 
     randomize() {
@@ -70,7 +70,7 @@ class Particle {
         this.light = this.hueSem > 0.5 ? opt.l1 : opt.l2;
         this.maxSpeed = this.hueSem > 0.5 ? 3 : 2;
         // Update size on randomization
-        this.size = this.hueSem > 0.5 ? 4 : 3;
+        this.size = this.hueSem > 0.5 ? 6 : 5;
     }
 
     update() {
@@ -125,12 +125,28 @@ class Particle {
         }
     }
 
-    // MODIFIED: Renders a filled square instead of a circle or line trail
+    // MODIFIED: Renders a filled triangle centered at (this.x, this.y)
     render() {
         fill(`hsla(${this.hue}, ${this.sat}%, ${this.light}%, .8)`);
         noStroke(); 
-        // Draw the filled square. The size is used for both width and height.
-        rect(this.x, this.y, this.size, this.size); 
+
+        // Temporarily translate and rotate the canvas to draw a triangle centered at (this.x, this.y)
+        push();
+        translate(this.x, this.y);
+        
+        // Optional: Rotate the triangle to align with the direction of flow (a)
+        let a = Math.atan2(this.vy, this.vx) + deg(90); 
+        rotate(a);
+
+        // Define the vertices of the triangle relative to the center (0, 0)
+        let s = this.size;
+        triangle(
+            0, -s,           // Top vertex
+            -s * 0.866, s * 0.5, // Bottom-left vertex (0.866 is approx sin(60)/cos(60) factor)
+            s * 0.866, s * 0.5  // Bottom-right vertex
+        );
+        
+        pop(); // Restore the original canvas transformation
         this.updatePrev();
     }
 }
@@ -145,9 +161,7 @@ function setup() {
     for (let i = 0; i < opt.particles; i++) {
         Particles.push(new Particle(Math.random() * width, Math.random() * height));
     }
-    // Set rectangle drawing mode to CENTER so the particle's (x, y) is the center of the square.
-    // This is crucial for accurate particle positioning.
-    rectMode(CENTER); 
+    // No rectMode or initial stroke settings needed for this triangle setup
 }
 
 /*--------------------
@@ -157,7 +171,7 @@ let inGame = false;
 function draw() {
     if (!inGame && document.visibilityState == 'visible') {
         time++;
-        // Increased alpha (95) for the background to minimize trails, emphasizing the discrete shapes
+        // Use a high alpha (95) to ensure distinct, sharp shapes and prevent trails
         background(0, 95); 
 
         for (let p of Particles) {
