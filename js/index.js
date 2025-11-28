@@ -136,7 +136,7 @@ function updateList() {
     const allElems = Array.from(document.querySelectorAll('#gamesList li'));
 
     // Separate the "Extra Games!" element if it exists
-    const extraGamesElem = allElems.find(item => item.textContent.trim() === 'Extra Games!');
+    const extraGamesElem = allElems.find(item => item.textContent.trim() == 'Extra Games!');
     // Filter out the "Extra Games!" element from the main list for now
     const elems = allElems.filter(item => item !== extraGamesElem);
 
