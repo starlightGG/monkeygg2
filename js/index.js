@@ -126,69 +126,133 @@ function jaroWinklerSimilarity(s1, s2) {
 }
 
 /**
- * Updates the list of games based on the current search filter and sort type.
- *
- * @return {void}
- */
+* Updates the list of games based on the current search filter and sort type.
+*
+* @return {void}
+*/
 function updateList() {
     const filter = $('#search').val().toLowerCase();
-    const elems = Array.from(document.querySelectorAll('#gamesList li'));
+    // Use document.querySelectorAll to get all li elements inside #gamesList
+    const allElems = Array.from(document.querySelectorAll('#gamesList li'));
+
+    // Separate the "Extra Games!" element if it exists
+    const extraGamesElem = allElems.find(item => item.textContent.trim() === 'Extra Games!');
+    // Filter out the "Extra Games!" element from the main list for now
+    const elems = allElems.filter(item => item !== extraGamesElem);
+
     const sortType = $('#sort').val();
 
-    // sort by selected sort type
+    // --- 1. Sort by selected sort type ---
     elems.sort(function (a, b) {
         if (sortType === 'alphabetical') {
             return a.textContent.localeCompare(b.textContent);
         } else if (sortType === 'reverse') {
             return b.textContent.localeCompare(a.textContent);
         }
+        // If sortType is neither, maintain current order (or handle other cases)
+        return 0;
     });
 
-    // then filter items with the search input
+    let itemsVisibleCount = 0;
+
+    // --- 2. Filter items with the search input and count visible items ---
     elems.forEach(function (item) {
-        let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase().slice(0, filter.length - 1));
-        if (item.getAttribute('aliases')) {
-            for (alias in item.getAttribute('aliases').split(',')) {
-                if (alias.length > 1) {
-                    console.log('alias');
-                    console.log(alias);
-                    console.log(typeof alias);
-                    console.log(alias.length);
-                    similarity += jaroWinklerSimilarity(filter, alias.toLowerCase().slice(0, filter.length - 1));
+        // Hide it by default
+        item.style.display = 'none';
+
+        // Only calculate similarity and check visibility if there is a filter
+        if (filter.length > 0) {
+            let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase().slice(0, filter.length));
+
+            if (item.getAttribute('aliases')) {
+                const aliases = item.getAttribute('aliases').split(',');
+                for (const alias of aliases) {
+                    if (alias.length > 1) {
+                        // The original logic here was a bit complex with slice,
+                        // simpler to just check full similarity for aliases or refine the slice.
+                        // Assuming you want to add alias similarity
+                        similarity += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
+                    }
                 }
             }
-        }
 
-        if ((similarity >= 0.7 && item.innerHTML.length > 2) || item.innerHTML.toLowerCase().indexOf(filter) > -1) {
-            item.style.display = '';
+            // Check for Jaro-Winkler similarity or direct substring match
+            if ((similarity >= 0.7 && item.innerHTML.length > 2) || item.innerHTML.toLowerCase().includes(filter)) {
+                item.style.display = '';
+                itemsVisibleCount++;
+            }
         } else {
-            item.style.display = 'none';
+            // If the filter is empty, everything is visible
+            item.style.display = '';
+            itemsVisibleCount++;
         }
     });
 
-    // now sort by jaro winkler distance
-    elems.sort(function (a, b) {
+    // --- 3. Sort by Jaro-Winkler distance (only for visible items) ---
+    // Note: The original logic sorts ALL items, which might reorder hidden items.
+    // To only sort the *visible* items and maintain the list order for the user:
+    // This step must happen *after* filtering is complete, on the `elems` array.
+    // The sorting logic here *must* match how items were originally sorted/filtered if a visual change is desired.
+
+    // Get the currently visible elements for distance sorting
+    const visibleElems = elems.filter(item => item.style.display !== 'none');
+
+    visibleElems.sort(function (a, b) {
         let distanceA = jaroWinklerSimilarity(filter, a.textContent.toLowerCase());
         if (a.getAttribute('aliases')) {
-            for (alias in a.getAttribute('aliases').split(',')) {
-                distanceA += jaroWinklerSimilarity(filter, alias.toLowerCase());
+            for (const alias of a.getAttribute('aliases').split(',')) {
+                distanceA += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
             }
         }
 
         let distanceB = jaroWinklerSimilarity(filter, b.textContent.toLowerCase());
         if (b.getAttribute('aliases')) {
-            for (alias in b.getAttribute('aliases').split(',')) {
-                distanceB += jaroWinklerSimilarity(filter, alias.toLowerCase());
+            for (const alias of b.getAttribute('aliases').split(',')) {
+                distanceB += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
             }
         }
-        return distanceA - distanceB;
+        // Sort in descending order of similarity (higher distance means a better match)
+        return distanceB - distanceA;
     });
 
-    // then fill it with the sorted and filtered list
-    for (const item of elems) {
-        document.getElementById('gamesList').appendChild(item);
-        updateGameList();
+    // --- 4. Handle "Extra Games!" fallback ---
+    if (extraGamesElem) {
+        if (filter.length > 0 && itemsVisibleCount === 0) {
+            // If a search was performed and nothing was found, display "Extra Games!"
+            extraGamesElem.style.display = '';
+            // Add it to the list of elements to be appended last
+            visibleElems.push(extraGamesElem);
+        } else {
+            // Otherwise, hide it or use its default state (if filter is empty, it should probably be visible too)
+            extraGamesElem.style.display = filter.length === 0 ? '' : 'none';
+
+            // If the filter is empty, ensure it's in the list to be appended
+            if (filter.length === 0) {
+                visibleElems.push(extraGamesElem);
+            }
+        }
     }
+
+
+    // --- 5. Then fill the list with the sorted and filtered elements ---
+    const gamesListContainer = document.getElementById('gamesList');
+    // Clear the current list content (optional, but ensures correct reordering)
+    // gamesListContainer.innerHTML = ''; // Be cautious if other elements are in the list
+
+    // Append the visible (and sorted by distance) elements first
+    for (const item of visibleElems) {
+        gamesListContainer.appendChild(item);
+    }
+
+    // Append the *hidden* elements last (to ensure the visible ones are at the top)
+    const hiddenElems = elems.filter(item => item.style.display === 'none');
+    for (const item of hiddenElems) {
+        gamesListContainer.appendChild(item);
+    }
+
+
+    // Make sure updateGameList() is called once all DOM manipulation is done
+    updateGameList();
 }
 $('#search').on('input', updateList);
 $('#sort').on('change', updateList);
