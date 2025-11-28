@@ -965,7 +965,7 @@ var json={
       "aliases": [],
       "categories": []
     },
-    "extra-games": {
+    "Extra Games!": {
       "path": "extra-games",
       "aliases": [],
       "categories": []
