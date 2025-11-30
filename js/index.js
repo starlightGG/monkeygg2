@@ -128,62 +128,72 @@ function jaroWinklerSimilarity(s1, s2) {
 /**
  * Updates the list of games based on the current search filter and sort type.
  *
+ * @param {boolean} isFallback - True if this call is the result of the 'no results' fallback.
  * @return {void}
  */
-function updateList() {
-    const filter = $('#search').val().toLowerCase();
+function updateList(isFallback = false) {
+    // Determine the filter text based on whether this is a fallback search or a user search.
+    // If it's a fallback, we use 'Extra Games!', otherwise, we use the text from the search bar.
+    let filter;
+    let originalFilterValue = $('#search').val().toLowerCase();
+
+    if (isFallback) {
+        filter = 'extra games!'; // Use the hardcoded fallback filter value
+    } else {
+        filter = originalFilterValue; // Use the value currently displayed in the search bar
+    }
+    
+    // Safety check for empty filter, although the rest of the logic handles it
+    if (filter === '') {
+        filter = 'extra games!'; // Default to showing all or the fallback if search is empty
+    }
+
     const elems = Array.from(document.querySelectorAll('#gamesList li'));
     const sortType = $('#sort').val();
-    let visibleCount = 0; // Initialize a counter for visible elements
+    let visibleCount = 0;
 
-    // Sort by selected sort type (alphabetical or reverse)
+    // 1. Sort by selected sort type (alphabetical or reverse)
     elems.sort(function (a, b) {
         if (sortType === 'alphabetical') {
             return a.textContent.localeCompare(b.textContent);
         } else if (sortType === 'reverse') {
             return b.textContent.localeCompare(a.textContent);
         }
-        return 0; // Default return if sortType is neither
+        return 0;
     });
 
-    // Then filter and count items with the search input
+    // 2. Filter and count visible items using the current 'filter' variable
     elems.forEach(function (item) {
-        // NOTE: The original alias loop had a potential bug (for..in over split(',') gives indices/strings, not actual aliases).
-        // I will focus on the core request, but be aware of that logic.
-
-        // Initialize similarity based on main text
         let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase().slice(0, filter.length - 1));
 
-        // Add similarity from aliases
         const aliasesAttr = item.getAttribute('aliases');
         if (aliasesAttr) {
-            // FIX: Use split(',') directly, 'alias' in the loop is the index/string, not the value.
             const aliases = aliasesAttr.split(',');
             for (const alias of aliases) {
                 if (alias.length > 1) {
-                    // console.log('alias', alias); // Debug logs removed for cleaner code
                     similarity += jaroWinklerSimilarity(filter, alias.trim().toLowerCase().slice(0, filter.length - 1));
                 }
             }
         }
 
-        // Determine visibility based on similarity or simple substring match
         const isVisible = (similarity >= 0.7 && item.innerHTML.length > 2) || item.innerHTML.toLowerCase().includes(filter);
 
         if (isVisible) {
             item.style.display = '';
-            visibleCount++; // Increment count if item is visible
+            visibleCount++;
         } else {
             item.style.display = 'none';
         }
     });
 
-    // **Check if no elements are visible and call the function**
-    if (visibleCount === 0) {
-        handleNoResults();
-    } 
+    // 3. Fallback Logic: Call handleNoResults if count is zero AND we are not already in the fallback state.
+    // The check for the original filter prevents the fallback from running when 'Extra Games!' itself is searched
+    if (visibleCount === 0 && !isFallback && originalFilterValue !== 'extra games!') {
+        handleNoResults(originalFilterValue); // Pass the current filter value
+        return; // Stop the current execution
+    }
 
-    // Now sort by Jaro-Winkler distance (only if a filter is active)
+    // 4. Sorting by Jaro-Winkler distance (only if a filter is active)
     if (filter.length > 0) {
         elems.sort(function (a, b) {
             let distanceA = jaroWinklerSimilarity(filter, a.textContent.toLowerCase());
@@ -206,38 +216,39 @@ function updateList() {
         });
     }
 
-
-    // Then fill the list with the sorted and filtered list
+    // 5. Fill the list and refresh
     const gamesList = document.getElementById('gamesList');
     for (const item of elems) {
         gamesList.appendChild(item);
     }
-    // Call updateGameList once after all changes are made
     updateGameList();
 }
-function handleNoResults() {
-    // Check if the current filter is NOT already '2048' to prevent an infinite loop
-    if ($('#search').val().toLowerCase() !== 'Extra Games!') {
-        // 1. Update the search input field with the fallback game name
-        alert("Game was not found, perhaps you can try this fallback game");
-        $('#search').val('Extra Games!');
 
-        // 2. Call updateList again, passing 'true' to indicate this is the fallback attempt.
-        // This prevents re-calling handleNoResults() if '2048' also yields no results.
-        updateList(true);
+/**
+ * Handles the case where no results are found by automatically searching for 'Extra Games!'
+ * without changing the visible content of the search bar.
+ *
+ * @param {string} originalValue - The value that was originally in the search bar.
+ */
+function handleNoResults(originalValue) {
+    const FALLBACK_FILTER = 'extra games!';
 
-        // Optional: Provide a visual cue to the user
-        console.log("No results found. Automatically searching for 'Extra Games!'.");
-        // You might want to update a message area here, e.g.:
-        // $('#searchMessage').text("No match found. Showing results for '2048' instead.");
-    }
+    // 1. Temporarily set the hidden value used by the filter logic to the fallback term
+    //    NOTE: We are NOT using $('#search').val(FALLBACK_FILTER) to avoid updating the display.
+    //    Instead, we rely on updateList being called with isFallback=true to use the hardcoded value.
+
+    // 2. Call updateList again, passing 'true' to indicate this is the fallback attempt.
+    updateList(true);
+
+    // 3. Optional: Provide a visual cue to the user that the fallback search was used
+    console.log(`No results found for "${originalValue}". Showing results for "${FALLBACK_FILTER}" instead.`);
+    // You could update a message element here instead of the console:
+    // $('#searchMessage').text(`No match for ${originalValue}. Displaying ${FALLBACK_FILTER} results.`);
 }
-// Attach the function to the inputs
-$('#search').on('input', updateList);
-$('#sort').on('change', updateList);
 
-dragElement(document.getElementById('gameButton'));
-dragElement(document.getElementById('refresh'));
+// Attach the function to the inputs, calling updateList without any argument
+$('#search').on('input', function() { updateList(); });
+$('#sort').on('change', function() { updateList(); });
 
 const sequences = [
     { keys: ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA', 'Enter'], action: () => alert('No easter egg here') },
