@@ -219,6 +219,7 @@ function handleNoResults() {
     // Check if the current filter is NOT already '2048' to prevent an infinite loop
     if ($('#search').val().toLowerCase() !== 'Extra Games!') {
         // 1. Update the search input field with the fallback game name
+        alert("Game was not found, perhaps you can try this fallback game");
         $('#search').val('Extra Games!');
 
         // 2. Call updateList again, passing 'true' to indicate this is the fallback attempt.
