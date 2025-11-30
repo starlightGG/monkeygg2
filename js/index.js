@@ -132,27 +132,22 @@ function jaroWinklerSimilarity(s1, s2) {
  * @return {void}
  */
 function updateList(isFallback = false) {
-    // Determine the filter text based on whether this is a fallback search or a user search.
-    // If it's a fallback, we use 'Extra Games!', otherwise, we use the text from the search bar.
+    const originalFilterValue = $('#search').val().toLowerCase();
+    
     let filter;
-    let originalFilterValue = $('#search').val().toLowerCase();
-
+    
+    // 1. Determine the actual filter string
     if (isFallback) {
         filter = 'extra games!'; // Use the hardcoded fallback filter value
     } else {
         filter = originalFilterValue; // Use the value currently displayed in the search bar
     }
     
-    // Safety check for empty filter, although the rest of the logic handles it
-    if (filter === '') {
-        filter = 'extra games!'; // Default to showing all or the fallback if search is empty
-    }
-
     const elems = Array.from(document.querySelectorAll('#gamesList li'));
     const sortType = $('#sort').val();
     let visibleCount = 0;
 
-    // 1. Sort by selected sort type (alphabetical or reverse)
+    // 2. Sort by selected sort type (alphabetical or reverse)
     elems.sort(function (a, b) {
         if (sortType === 'alphabetical') {
             return a.textContent.localeCompare(b.textContent);
@@ -162,8 +157,16 @@ function updateList(isFallback = false) {
         return 0;
     });
 
-    // 2. Filter and count visible items using the current 'filter' variable
+    // 3. Filter and count visible items
     elems.forEach(function (item) {
+        // If the filter is empty, SHOW ALL items immediately.
+        if (filter === '') {
+            item.style.display = '';
+            visibleCount++;
+            return; // Skip the complex filtering logic below
+        }
+        
+        // ... (Existing Similarity calculation logic for non-empty filters) ...
         let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase().slice(0, filter.length - 1));
 
         const aliasesAttr = item.getAttribute('aliases');
@@ -186,15 +189,16 @@ function updateList(isFallback = false) {
         }
     });
 
-    // 3. Fallback Logic: Call handleNoResults if count is zero AND we are not already in the fallback state.
-    // The check for the original filter prevents the fallback from running when 'Extra Games!' itself is searched
-    if (visibleCount === 0 && !isFallback && originalFilterValue !== 'extra games!') {
-        handleNoResults(originalFilterValue); // Pass the current filter value
-        return; // Stop the current execution
+    // 4. Fallback Logic: Call handleNoResults only if count is zero AND not already a fallback.
+    // Also, only trigger if the user actually typed something (filter is not empty).
+    if (visibleCount === 0 && !isFallback && originalFilterValue !== '' && originalFilterValue !== 'extra games!') {
+        handleNoResults(originalFilterValue); 
+        return; 
     }
 
-    // 4. Sorting by Jaro-Winkler distance (only if a filter is active)
+    // 5. Sorting by Jaro-Winkler distance (only if a filter is active)
     if (filter.length > 0) {
+        // ... (Sorting logic remains the same) ...
         elems.sort(function (a, b) {
             let distanceA = jaroWinklerSimilarity(filter, a.textContent.toLowerCase());
             const aliasesA = a.getAttribute('aliases');
@@ -216,7 +220,7 @@ function updateList(isFallback = false) {
         });
     }
 
-    // 5. Fill the list and refresh
+    // 6. Fill the list and refresh
     const gamesList = document.getElementById('gamesList');
     for (const item of elems) {
         gamesList.appendChild(item);
@@ -233,19 +237,13 @@ function updateList(isFallback = false) {
 function handleNoResults(originalValue) {
     const FALLBACK_FILTER = 'extra games!';
 
-    // 1. Temporarily set the hidden value used by the filter logic to the fallback term
-    //    NOTE: We are NOT using $('#search').val(FALLBACK_FILTER) to avoid updating the display.
-    //    Instead, we rely on updateList being called with isFallback=true to use the hardcoded value.
-
-    // 2. Call updateList again, passing 'true' to indicate this is the fallback attempt.
+    // Call updateList again, passing 'true' to indicate this is the fallback attempt.
     updateList(true);
 
-    // 3. Optional: Provide a visual cue to the user that the fallback search was used
     console.log(`No results found for "${originalValue}". Showing results for "${FALLBACK_FILTER}" instead.`);
-    // You could update a message element here instead of the console:
-    // $('#searchMessage').text(`No match for ${originalValue}. Displaying ${FALLBACK_FILTER} results.`);
 }
 
+// Attach the function to the inputs, calling updateList without any argument
 $('#search').on('input', function() { updateList(); });
 $('#sort').on('change', function() { updateList(); });
 
