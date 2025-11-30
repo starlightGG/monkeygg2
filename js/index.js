@@ -142,24 +142,23 @@ function updateList() {
     const sortType = $('#sort').val();
     let itemsVisibleCount = 0;
 
-    // --- 1. Initial Sort by selected sort type (Applies when filter is NOT active) ---
-    // This initial sort ensures a predictable order when no search is performed.
+    // --- 1. Initial Sort by selected sort type ---
     elems.sort(function (a, b) {
         if (sortType === 'alphabetical') {
             return a.textContent.localeCompare(b.textContent);
         } else if (sortType === 'reverse') {
             return b.textContent.localeCompare(a.textContent);
         }
-        return 0; // Maintain original order if sortType is neither
+        return 0;
     });
 
     // --- 2. Filter items with the search input and count visible items ---
+    // Make sure we iterate over ALL non-Extra Games elements and hide/show them
     elems.forEach(function (item) {
         // Hide it by default
         item.style.display = 'none';
 
         if (filter.length > 0) {
-            // Logic for a non-empty filter
             let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase().slice(0, filter.length));
 
             if (item.getAttribute('aliases')) {
@@ -183,8 +182,7 @@ function updateList() {
         }
     });
 
-    // --- 3. Optional: Sort by Jaro-Winkler distance (for currently visible non-Extra Games items) ---
-    // Only perform this *re-sort* if a search filter is active.
+    // --- 3. Optional: Sort by Jaro-Winkler distance ---
     let visibleElems = elems.filter(item => item.style.display !== 'none');
 
     if (filter.length > 0) {
@@ -202,33 +200,29 @@ function updateList() {
                     distanceB += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
                 }
             }
-            // Sort in descending order of similarity (higher distance means a better match)
+            // Sort in descending order of similarity
             return distanceB - distanceA;
         });
     }
 
-    // --- 4. Handle "Extra Games!" fallback (The fix is here) ---
+    // --- 4. Handle "Extra Games!" fallback (THE FIX IS HERE) ---
     if (extraGamesElem) {
-        extraGamesElem.style.display = 'none'; // Start by hiding it
+        extraGamesElem.style.display = 'none'; // Ensure it starts hidden
 
+        // Case 1: Search bar is empty OR Case 2: Search found nothing
         if (filter.length === 0 || itemsVisibleCount === 0) {
-            // Case A: Search bar is empty OR Case B: Search was performed and nothing was found.
-            // In BOTH cases, show "Extra Games!" as a fallback.
+            // The item needs to be displayed
             extraGamesElem.style.display = '';
             
-            if (itemsVisibleCount === 0) {
-                 // Clear any previously visible (but now sorted away) elements if count is zero
-                visibleElems = [];
-            } else {
-                // If filter is empty, visibleElems already contains all games + extraGamesElem shouldn't be here yet
-                // But the main goal is to add it to the visible list.
+            // If itemsVisibleCount is 0 (no search results), clear the visible list 
+            // and ONLY add "Extra Games!".
+            if (itemsVisibleCount === 0 && filter.length > 0) {
+                visibleElems = []; // Critical: Overwrite the list to contain only the fallback
             }
 
+            // Add the extra game element to the list of elements we will re-append
             visibleElems.push(extraGamesElem);
         }
-        
-        // Ensure ALL non-Extra Games elements are hidden if itemsVisibleCount is 0,
-        // which the filtering loop (Step 2) should already handle for a non-empty filter.
     }
 
 
@@ -240,8 +234,9 @@ function updateList() {
         gamesListContainer.appendChild(item);
     }
 
-    // Append the *hidden* elements last (to ensure the visible ones are at the top)
-    const hiddenElems = elems.filter(item => item.style.display === 'none');
+    // Append the *hidden* elements last (which now includes all non-matching games 
+    // and potentially the hidden "Extra Games!" element if results were found)
+    const hiddenElems = allElems.filter(item => item.style.display === 'none');
     for (const item of hiddenElems) {
         gamesListContainer.appendChild(item);
     }
