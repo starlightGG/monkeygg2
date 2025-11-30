@@ -153,7 +153,7 @@ function jaroWinklerSimilarity(s1, s2) {
                 const gameName = item.textContent.toLowerCase().trim();
 
                 // Identify the 'Extra Games!' element
-                if (gameName === 'extra games!') {
+                if (gameName === 'extra-games') {
                     gamerequire = item;
                     item.style.display = 'none'; // Initially hide 'Extra Games!'
                     return; // Skip filtering/sorting logic for 'Extra Games!' in this loop
