@@ -138,7 +138,7 @@ function updateList(isFallback = false) {
     
     // 1. Determine the actual filter string
     if (isFallback) {
-        filter = 'extra games!'; // Use the hardcoded fallback filter value
+        filter = 'more games!'; // Use the hardcoded fallback filter value
     } else {
         filter = originalFilterValue; // Use the value currently displayed in the search bar
     }
@@ -191,7 +191,7 @@ function updateList(isFallback = false) {
 
     // 4. Fallback Logic: Call handleNoResults only if count is zero AND not already a fallback.
     // Also, only trigger if the user actually typed something (filter is not empty).
-    if (visibleCount === 0 && !isFallback && originalFilterValue !== '' && originalFilterValue !== 'extra games!') {
+    if (visibleCount === 0 && !isFallback && originalFilterValue !== '' && originalFilterValue !== 'more games!') {
         handleNoResults(originalFilterValue); 
         return; 
     }
@@ -229,13 +229,13 @@ function updateList(isFallback = false) {
 }
 
 /**
- * Handles the case where no results are found by automatically searching for 'Extra Games!'
+ * Handles the case where no results are found by automatically searching for 'more Games!'
  * without changing the visible content of the search bar.
  *
  * @param {string} originalValue - The value that was originally in the search bar.
  */
 function handleNoResults(originalValue) {
-    const FALLBACK_FILTER = 'extra games!';
+    const FALLBACK_FILTER = 'more games!';
 
     // Call updateList again, passing 'true' to indicate this is the fallback attempt.
     updateList(true);
