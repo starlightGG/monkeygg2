@@ -126,127 +126,115 @@ function jaroWinklerSimilarity(s1, s2) {
 }
 
 /**
- * Updates the list of games based on the current search filter and sort type.
- *
- * @return {void}
- */
-function updateList() {
-    const filter = $('#search').val().toLowerCase();
-    const listElement = document.getElementById('gamesList');
-    const elems = Array.from(listElement.querySelectorAll('li'));
-    const sortType = $('#sort').val();
-    let gamerequire = null;
-    let visibleGameCount = 0; // New counter for visible games
+         * Updates the list of games based on the current search filter and sort type.
+         *
+         * @return {void}
+         */
+        function updateList() {
+            const filter = $('#search').val().toLowerCase();
+            const listElement = document.getElementById('gamesList');
+            const elems = Array.from(listElement.querySelectorAll('li'));
+            const sortType = $('#sort').val();
+            let gamerequire = null;
+            let visibleGameCount = 0; // New counter for visible games
 
-    // 1. Sort by selected sort type (alphabetical/reverse)
-    elems.sort(function (a, b) {
-        if (sortType === 'alphabetical') {
-            return a.textContent.localeCompare(b.textContent);
-        } else if (sortType === 'reverse') {
-            return b.textContent.localeCompare(a.textContent);
-        }
-        return 0; // Default case for no sort type selected
-    });
-
-    // 2. Filter items with the search input and count visible games
-    elems.forEach(function (item) {
-        const gameName = item.textContent.toLowerCase().trim();
-
-        // Identify the 'Extra Games!' element
-        if (gameName === 'Extra Games!') {
-            gamerequire = item;
-            item.style.display = 'none'; // Initially hide 'Extra Games!'
-            return; // Skip filtering/sorting logic for 'Extra Games!' in this loop
-        }
-
-        let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase().slice(0, filter.length - 1));
-
-        // Check for aliases and update similarity
-        if (item.getAttribute('aliases')) {
-            // Note: 'for...in' iterates over property names (indices/keys), not values directly for arrays/NodeLists
-            // Use a proper loop or change 'in' to 'of' if you intend to iterate over values.
-            // Assuming 'alias' is the index here as per original code, we'll retrieve the actual alias string:
-            const aliases = item.getAttribute('aliases').split(',');
-            for (let i = 0; i < aliases.length; i++) {
-                const alias = aliases[i].trim();
-                if (alias.length > 1) {
-                    similarity += jaroWinklerSimilarity(filter, alias.toLowerCase().slice(0, filter.length - 1));
+            // 1. Sort by selected sort type (alphabetical/reverse)
+            elems.sort(function (a, b) {
+                if (sortType === 'alphabetical') {
+                    return a.textContent.localeCompare(b.textContent);
+                } else if (sortType === 'reverse') {
+                    return b.textContent.localeCompare(a.textContent);
                 }
+                return 0; // Default case for no sort type selected
+            });
+
+            // 2. Filter items with the search input and count visible games
+            elems.forEach(function (item) {
+                const gameName = item.textContent.toLowerCase().trim();
+
+                // Identify the 'Extra Games!' element
+                if (gameName === 'extra games!') {
+                    gamerequire = item;
+                    item.style.display = 'none'; // Initially hide 'Extra Games!'
+                    return; // Skip filtering/sorting logic for 'Extra Games!' in this loop
+                }
+
+                // NOTE: The original jaroWinklerSimilarity call used slice(0, filter.length - 1) which is unusual.
+                // We'll use the full game name for similarity check against the full filter.
+                let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase());
+
+                // Check for aliases and update similarity
+                if (item.getAttribute('aliases')) {
+                    const aliases = item.getAttribute('aliases').split(',');
+                    for (let i = 0; i < aliases.length; i++) {
+                        const alias = aliases[i].trim();
+                        if (alias.length > 1) {
+                            // Add similarity from aliases. The original code used slice(0, filter.length - 1) on the alias too.
+                            // We use the full alias text for the check.
+                            similarity += jaroWinklerSimilarity(filter, alias.toLowerCase());
+                        }
+                    }
+                }
+
+                // Determine visibility based on similarity or simple indexOf
+                // NOTE: Using a simple indexOf check is often more robust for basic search.
+                const matchesSearch = item.innerHTML.toLowerCase().indexOf(filter) > -1;
+                
+                // The original logic was: (similarity >= 0.7 && item.innerHTML.length > 2) || item.innerHTML.toLowerCase().indexOf(filter) > -1
+                if ((similarity >= 0.7 && item.innerHTML.length > 2) || matchesSearch) {
+                    item.style.display = ''; // Show the item
+                    visibleGameCount++;      // Increment count
+                } else {
+                    item.style.display = 'none'; // Hide the item
+                }
+            });
+
+            // 3. Conditional display for 'Extra Games!'
+            if (visibleGameCount === 0 && gamerequire) {
+                // Only show 'Extra Games!' if NO other games are visible
+                gamerequire.style.display = '';
+                visibleGameCount++; 
+            } else if (gamerequire) {
+                // Ensure 'Extra Games!' is hidden if other games are visible
+                gamerequire.style.display = 'none';
             }
-        }
 
-        // Determine visibility based on similarity or simple indexOf
-        if ((similarity >= 0.7 && item.innerHTML.length > 2) || item.innerHTML.toLowerCase().indexOf(filter) > -1) {
-            item.style.display = ''; // Show the item
-            visibleGameCount++;      // Increment count
-        } else {
-            item.style.display = 'none'; // Hide the item
-        }
-    });
+            // 4. Sort by Jaro-Winkler distance (only for items that are not 'Extra Games!')
+            elems.sort(function (a, b) {
+                // Skip 'Extra Games!' from Jaro-Winkler sorting to prevent it from floating up/down unexpectedly
+                if (a === gamerequire) return 1; 
+                if (b === gamerequire) return -1; 
 
-    // 3. Conditional display for 'Extra Games!'
-    if (visibleGameCount === 0 && gamerequire) {
-        // Only show 'Extra Games!' if NO other games are visible
-        gamerequire.style.display = '';
-        visibleGameCount++; // Treat 'Extra Games!' as a visible item for logic if needed
-    } else if (gamerequire) {
-        // Ensure 'Extra Games!' is hidden if other games are visible
-        gamerequire.style.display = 'none';
-    }
+                const aText = a.textContent.toLowerCase();
+                const bText = b.textContent.toLowerCase();
 
-    // 4. Sort by Jaro-Winkler distance (only for items that are not 'Extra Games!')
-    // We should only sort items that are not the 'Extra Games!' item, 
-    // but the final sort here determines the DOM order for all elements in `elems`.
-    // The original logic sorts ALL elements including 'Extra Games!' which might place it
-    // unexpectedly in the list. For simplicity and to maintain the original intent 
-    // while addressing the request, we'll keep the sort as is, but rely on the subsequent 
-    // DOM re-insertion to order them.
-    elems.sort(function (a, b) {
-        // Skip 'Extra Games!' from Jaro-Winkler sorting to prevent it from floating up/down unexpectedly
-        if (a === gamerequire) return 1; // Push 'Extra Games!' to the end for J-W sort
-        if (b === gamerequire) return -1; // Pull 'Extra Games!' from the end for J-W sort
+                let distanceA = jaroWinklerSimilarity(filter, aText);
+                if (a.getAttribute('aliases')) {
+                    const aliases = a.getAttribute('aliases').split(',');
+                    for (let i = 0; i < aliases.length; i++) {
+                        distanceA += jaroWinklerSimilarity(filter, aliases[i].toLowerCase());
+                    }
+                }
 
-        const aText = a.textContent.toLowerCase();
-        const bText = b.textContent.toLowerCase();
+                let distanceB = jaroWinklerSimilarity(filter, bText);
+                if (b.getAttribute('aliases')) {
+                    const aliases = b.getAttribute('aliases').split(',');
+                    for (let i = 0; i < aliases.length; i++) {
+                        distanceB += jaroWinklerSimilarity(filter, aliases[i].toLowerCase());
+                    }
+                }
+                
+                // Keep original sort direction (distanceA - distanceB)
+                return distanceA - distanceB; 
+            });
 
-        let distanceA = jaroWinklerSimilarity(filter, aText);
-        if (a.getAttribute('aliases')) {
-            const aliases = a.getAttribute('aliases').split(',');
-            for (let i = 0; i < aliases.length; i++) {
-                distanceA += jaroWinklerSimilarity(filter, aliases[i].toLowerCase());
+            // 5. Re-render the list with the sorted and filtered elements
+            for (const item of elems) {
+                listElement.appendChild(item);
             }
+            
+            updateGameList(); 
         }
-
-        let distanceB = jaroWinklerSimilarity(filter, bText);
-        if (b.getAttribute('aliases')) {
-            const aliases = b.getAttribute('aliases').split(',');
-            for (let i = 0; i < aliases.length; i++) {
-                distanceB += jaroWinklerSimilarity(filter, aliases[i].toLowerCase());
-            }
-        }
-        
-        // The original code returned distanceA - distanceB. 
-        // Jaro-Winkler returns a **similarity** score (0 to 1). 
-        // distanceA - distanceB means higher similarity scores (closer to 1) 
-        // will result in a positive number, sorting them *down* (towards the end of the list) 
-        // for ascending sort order. This looks like it was intended to sort by 
-        // **lowest similarity first**, which is usually the opposite of what's desired
-        // for a "best match" sort.
-        // If you want best matches (highest similarity) *first*, you should return distanceB - distanceA.
-        // Sticking to original:
-        return distanceA - distanceB; 
-    });
-
-    // 5. Re-render the list with the sorted and filtered elements
-    // This is where the visibility set in step 2/3 takes effect.
-    for (const item of elems) {
-        listElement.appendChild(item);
-    }
-    
-    // updateGameList() is in the original code, assuming it's an external function
-    // that might do other things, so we keep it.
-    updateGameList(); 
-}
 
 $('#search').on('input', updateList);
 $('#sort').on('change', updateList);
