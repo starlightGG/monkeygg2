@@ -137,21 +137,21 @@ function updateList() {
     // 1. Separate the "Extra Games!" element
     const extraGamesElem = allElems.find(item => item.textContent.trim() === 'Extra Games!');
     // Filter out the "Extra Games!" element from the main list for now
-    const elems = allElems.filter(item => item !== extraGamesElem);
+    let elems = allElems.filter(item => item !== extraGamesElem);
 
     const sortType = $('#sort').val();
+    let itemsVisibleCount = 0;
 
-    // --- 1. Sort by selected sort type (Applies to all non-Extra Games elements) ---
+    // --- 1. Initial Sort by selected sort type (Applies when filter is NOT active) ---
+    // This initial sort ensures a predictable order when no search is performed.
     elems.sort(function (a, b) {
         if (sortType === 'alphabetical') {
             return a.textContent.localeCompare(b.textContent);
         } else if (sortType === 'reverse') {
             return b.textContent.localeCompare(a.textContent);
         }
-        return 0;
+        return 0; // Maintain original order if sortType is neither
     });
-
-    let itemsVisibleCount = 0;
 
     // --- 2. Filter items with the search input and count visible items ---
     elems.forEach(function (item) {
@@ -159,6 +159,7 @@ function updateList() {
         item.style.display = 'none';
 
         if (filter.length > 0) {
+            // Logic for a non-empty filter
             let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase().slice(0, filter.length));
 
             if (item.getAttribute('aliases')) {
@@ -182,41 +183,52 @@ function updateList() {
         }
     });
 
-    // --- 3. Sort by Jaro-Winkler distance (for currently visible non-Extra Games items) ---
+    // --- 3. Optional: Sort by Jaro-Winkler distance (for currently visible non-Extra Games items) ---
+    // Only perform this *re-sort* if a search filter is active.
     let visibleElems = elems.filter(item => item.style.display !== 'none');
 
-    visibleElems.sort(function (a, b) {
-        let distanceA = jaroWinklerSimilarity(filter, a.textContent.toLowerCase());
-        if (a.getAttribute('aliases')) {
-            for (const alias of a.getAttribute('aliases').split(',')) {
-                distanceA += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
+    if (filter.length > 0) {
+        visibleElems.sort(function (a, b) {
+            let distanceA = jaroWinklerSimilarity(filter, a.textContent.toLowerCase());
+            if (a.getAttribute('aliases')) {
+                for (const alias of a.getAttribute('aliases').split(',')) {
+                    distanceA += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
+                }
             }
-        }
 
-        let distanceB = jaroWinklerSimilarity(filter, b.textContent.toLowerCase());
-        if (b.getAttribute('aliases')) {
-            for (const alias of b.getAttribute('aliases').split(',')) {
-                distanceB += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
+            let distanceB = jaroWinklerSimilarity(filter, b.textContent.toLowerCase());
+            if (b.getAttribute('aliases')) {
+                for (const alias of b.getAttribute('aliases').split(',')) {
+                    distanceB += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
+                }
             }
-        }
-        // Sort in descending order of similarity (higher distance means a better match)
-        return distanceB - distanceA;
-    });
+            // Sort in descending order of similarity (higher distance means a better match)
+            return distanceB - distanceA;
+        });
+    }
 
     // --- 4. Handle "Extra Games!" fallback (The fix is here) ---
     if (extraGamesElem) {
-        if (filter.length === 0) {
-            // Case 1: Search bar is empty. Show "Extra Games!"
+        extraGamesElem.style.display = 'none'; // Start by hiding it
+
+        if (filter.length === 0 || itemsVisibleCount === 0) {
+            // Case A: Search bar is empty OR Case B: Search was performed and nothing was found.
+            // In BOTH cases, show "Extra Games!" as a fallback.
             extraGamesElem.style.display = '';
+            
+            if (itemsVisibleCount === 0) {
+                 // Clear any previously visible (but now sorted away) elements if count is zero
+                visibleElems = [];
+            } else {
+                // If filter is empty, visibleElems already contains all games + extraGamesElem shouldn't be here yet
+                // But the main goal is to add it to the visible list.
+            }
+
             visibleElems.push(extraGamesElem);
-        } else if (itemsVisibleCount === 0) {
-            // Case 2: Search was performed (filter.length > 0) and nothing was found. Show "Extra Games!"
-            extraGamesElem.style.display = '';
-            visibleElems.push(extraGamesElem);
-        } else {
-            // Case 3: Search was performed and results were found. Hide "Extra Games!".
-            extraGamesElem.style.display = 'none';
         }
+        
+        // Ensure ALL non-Extra Games elements are hidden if itemsVisibleCount is 0,
+        // which the filtering loop (Step 2) should already handle for a non-empty filter.
     }
 
 
