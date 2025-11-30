@@ -246,7 +246,6 @@ function handleNoResults(originalValue) {
     // $('#searchMessage').text(`No match for ${originalValue}. Displaying ${FALLBACK_FILTER} results.`);
 }
 
-// Attach the function to the inputs, calling updateList without any argument
 $('#search').on('input', function() { updateList(); });
 $('#sort').on('change', function() { updateList(); });
 
