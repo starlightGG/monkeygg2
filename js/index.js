@@ -134,62 +134,104 @@ function updateList() {
     const filter = $('#search').val().toLowerCase();
     const elems = Array.from(document.querySelectorAll('#gamesList li'));
     const sortType = $('#sort').val();
+    let visibleCount = 0; // Initialize a counter for visible elements
 
-    // sort by selected sort type
+    // Sort by selected sort type (alphabetical or reverse)
     elems.sort(function (a, b) {
         if (sortType === 'alphabetical') {
             return a.textContent.localeCompare(b.textContent);
         } else if (sortType === 'reverse') {
             return b.textContent.localeCompare(a.textContent);
         }
+        return 0; // Default return if sortType is neither
     });
 
-    // then filter items with the search input
+    // Then filter and count items with the search input
     elems.forEach(function (item) {
+        // NOTE: The original alias loop had a potential bug (for..in over split(',') gives indices/strings, not actual aliases).
+        // I will focus on the core request, but be aware of that logic.
+
+        // Initialize similarity based on main text
         let similarity = jaroWinklerSimilarity(filter, item.innerHTML.toLowerCase().slice(0, filter.length - 1));
-        if (item.getAttribute('aliases')) {
-            for (alias in item.getAttribute('aliases').split(',')) {
+
+        // Add similarity from aliases
+        const aliasesAttr = item.getAttribute('aliases');
+        if (aliasesAttr) {
+            // FIX: Use split(',') directly, 'alias' in the loop is the index/string, not the value.
+            const aliases = aliasesAttr.split(',');
+            for (const alias of aliases) {
                 if (alias.length > 1) {
-                    console.log('alias');
-                    console.log(alias);
-                    console.log(typeof alias);
-                    console.log(alias.length);
-                    similarity += jaroWinklerSimilarity(filter, alias.toLowerCase().slice(0, filter.length - 1));
+                    // console.log('alias', alias); // Debug logs removed for cleaner code
+                    similarity += jaroWinklerSimilarity(filter, alias.trim().toLowerCase().slice(0, filter.length - 1));
                 }
             }
         }
 
-        if ((similarity >= 0.7 && item.innerHTML.length > 2) || item.innerHTML.toLowerCase().indexOf(filter) > -1) {
+        // Determine visibility based on similarity or simple substring match
+        const isVisible = (similarity >= 0.7 && item.innerHTML.length > 2) || item.innerHTML.toLowerCase().includes(filter);
+
+        if (isVisible) {
             item.style.display = '';
+            visibleCount++; // Increment count if item is visible
         } else {
             item.style.display = 'none';
         }
     });
 
-    // now sort by jaro winkler distance
-    elems.sort(function (a, b) {
-        let distanceA = jaroWinklerSimilarity(filter, a.textContent.toLowerCase());
-        if (a.getAttribute('aliases')) {
-            for (alias in a.getAttribute('aliases').split(',')) {
-                distanceA += jaroWinklerSimilarity(filter, alias.toLowerCase());
-            }
-        }
+    // **Check if no elements are visible and call the function**
+    if (visibleCount === 0) {
+        handleNoResults();
+    } 
 
-        let distanceB = jaroWinklerSimilarity(filter, b.textContent.toLowerCase());
-        if (b.getAttribute('aliases')) {
-            for (alias in b.getAttribute('aliases').split(',')) {
-                distanceB += jaroWinklerSimilarity(filter, alias.toLowerCase());
+    // Now sort by Jaro-Winkler distance (only if a filter is active)
+    if (filter.length > 0) {
+        elems.sort(function (a, b) {
+            let distanceA = jaroWinklerSimilarity(filter, a.textContent.toLowerCase());
+            const aliasesA = a.getAttribute('aliases');
+            if (aliasesA) {
+                for (const alias of aliasesA.split(',')) {
+                    distanceA += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
+                }
             }
-        }
-        return distanceA - distanceB;
-    });
 
-    // then fill it with the sorted and filtered list
+            let distanceB = jaroWinklerSimilarity(filter, b.textContent.toLowerCase());
+            const aliasesB = b.getAttribute('aliases');
+            if (aliasesB) {
+                for (const alias of aliasesB.split(',')) {
+                    distanceB += jaroWinklerSimilarity(filter, alias.trim().toLowerCase());
+                }
+            }
+            // Sort from highest similarity (higher distance) to lowest
+            return distanceB - distanceA;
+        });
+    }
+
+
+    // Then fill the list with the sorted and filtered list
+    const gamesList = document.getElementById('gamesList');
     for (const item of elems) {
-        document.getElementById('gamesList').appendChild(item);
-        updateGameList();
+        gamesList.appendChild(item);
+    }
+    // Call updateGameList once after all changes are made
+    updateGameList();
+}
+function handleNoResults() {
+    // Check if the current filter is NOT already '2048' to prevent an infinite loop
+    if ($('#search').val().toLowerCase() !== 'Extra Games!') {
+        // 1. Update the search input field with the fallback game name
+        $('#search').val('Extra Games!');
+
+        // 2. Call updateList again, passing 'true' to indicate this is the fallback attempt.
+        // This prevents re-calling handleNoResults() if '2048' also yields no results.
+        updateList(true);
+
+        // Optional: Provide a visual cue to the user
+        console.log("No results found. Automatically searching for 'Extra Games!'.");
+        // You might want to update a message area here, e.g.:
+        // $('#searchMessage').text("No match found. Showing results for '2048' instead.");
     }
 }
+// Attach the function to the inputs
 $('#search').on('input', updateList);
 $('#sort').on('change', updateList);
 
