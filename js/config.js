@@ -300,7 +300,7 @@ var json={
       "aliases": [],
       "categories": []
     },
-    "Eaglercraft Ampler Launcher": {
+    "Eaglercraft Ampler Launcher (Minecraft)": {
       "path": "ampler-launcher",
       "aliases": [],
       "categories": []
